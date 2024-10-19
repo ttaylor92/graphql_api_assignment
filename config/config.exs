@@ -7,6 +7,19 @@
 # General application configuration
 import Config
 
+config :graphql_api_assignment, GraphqlApiAssignment.Repo,
+  database: "graphql_api_assignment_repo",
+  username: "user",
+  password: "pass",
+  hostname: "localhost"
+
+config :graphql_api_assignment,
+  ecto_repos: [GraphqlApiAssignment.Repo]
+
+config :ecto_shorts,
+  repo: GraphqlApiAssignment.Repo,
+  error_module: EctoShorts.Actions.Error
+
 config :graphql_api_assignment,
   generators: [timestamp_type: :utc_datetime]
 

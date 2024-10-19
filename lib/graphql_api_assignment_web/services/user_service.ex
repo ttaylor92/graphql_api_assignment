@@ -1,83 +1,55 @@
 defmodule GraphqlApiAssignmentWeb.Services.UserService do
-  @users [%{
-    id: 1,
-    name: "Bill",
-    email: "bill@gmail.com",
-    preferences: %{
-      likes_emails: false,
-      likes_phone_calls: true,
-      likes_faxes: true
-    }
-  }, %{
-    id: 2,
-    name: "Alice",
-    email: "alice@gmail.com",
-    preferences: %{
-      likes_emails: true,
-      likes_phone_calls: false,
-      likes_faxes: true
-    }
-  }, %{
-    id: 3,
-    name: "Jill",
-    email: "jill@hotmail.com",
-    preferences: %{
-      likes_emails: true,
-      likes_phone_calls: true,
-      likes_faxes: false
-    }
-  }, %{
-    id: 4,
-    name: "Tim",
-    email: "tim@gmail.com",
-    preferences: %{
-      likes_emails: false,
-      likes_phone_calls: false,
-      likes_faxes: false
-    }
-  }]
+  alias GraphqlApiAssignment.Accounts
 
   def get_user_by_id(id) do
-    user = Enum.find(@users, false, fn user -> user.id === id end)
-
-    if user !== false do
-      {:ok, user}
-    else
-      {:error, message: "User not found"}
+    case Accounts.get_user(id) do
+      nil -> {:error, message: "User not found"}
+      user -> {:ok, user}
     end
   end
 
   def create_user(args) do
-    {:ok, args}
+    case Accounts.create_user(args) do
+      {:ok, user} -> {:ok, user}
+
+      {:error, changeset} ->
+        {:error, message: "There was an error creating the user", errors: errors_on(changeset)}
+    end
   end
 
   def get_users_by_preferences(args) do
-    filtered_users = Enum.filter(@users, fn user ->
-      Enum.all?(Map.keys(args), fn key ->
-        args[key] === nil or user.preferences[key] === args[key]
-      end)
-    end)
+    filtered_users = Accounts.get_users(args)
+    IO.inspect(filtered_users)
     {:ok, filtered_users}
   end
 
   def update_a_user(args) do
-    case get_user_by_id(args.user_id) do
-      {:ok, user} ->
-        updated_user = Map.merge(user, args)
-        {:ok, updated_user}
-
-      {:error, reason} -> {:error, reason}
+    case Accounts.update_user(args.user_id, args) do
+      {:ok, user} -> {:ok, user}
+      {:error, changeset} -> {:error, message: "User not found", errors: errors_on(changeset)}
     end
   end
 
   def update_user_preference(args) do
     case get_user_by_id(args.id) do
       {:ok, user} ->
-        updated_preferences = Map.merge(user.preferences, Map.take(args, [:likes_emails, :likes_phone_calls, :likes_faxes]))
-        updated_user = Map.put(user, :preferences, updated_preferences)
-        {:ok, updated_user}
+        preference_id = user.preference_id
 
-      {:error, reason} -> {:error, reason}
+        case Accounts.update_user_preference(preference_id, args) do
+          {:ok, preference} -> {:ok, preference}
+          {:error, changeset} -> {:error, message: "Error updating user preferences", errors: errors_on(changeset)}
+        end
+
+      {:error, message} -> {:error, message}
     end
+  end
+
+  def errors_on(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, fn {message, opts} ->
+      Regex.replace(~r"%{(\w+)}", message, fn _, key ->
+        atom_key = String.to_existing_atom(key)
+        opts |> Keyword.get(atom_key, key) |> to_string()
+      end)
+    end)
   end
 end

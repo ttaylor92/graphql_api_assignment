@@ -6,7 +6,6 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutation do
   object :user_mutations do
     @desc "Create a user"
     field :create_user, :user_response do
-      arg :id, non_null(:integer)
       arg :name, non_null(:string)
       arg :email, non_null(:string)
       arg :preferences, non_null(:preference_input)

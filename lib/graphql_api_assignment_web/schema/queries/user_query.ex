@@ -13,9 +13,9 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuery do
 
     @desc "Get users by preferences"
     field :users, list_of(:user_response) do
-      arg :likes_emails, :boolean
-      arg :likes_phone_calls, :boolean
-      arg :likes_faxes, :boolean
+      arg :before, :integer
+      arg :after, :integer
+      arg :first, :integer
       resolve &UserResolver.get_users_by_preferences/3
     end
   end
