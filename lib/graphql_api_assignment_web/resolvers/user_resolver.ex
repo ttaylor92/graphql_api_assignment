@@ -10,7 +10,7 @@ defmodule GraphqlApiAssignmentWeb.Resolvers.UserResolver do
   end
 
   def get_users_by_preferences(_, args, _) do
-    UserService.get_users_by_preferences(args)
+    UserService.get_users(args)
   end
 
   def update_a_user(_, args, _) do

@@ -26,7 +26,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutation do
       arg :likes_emails, :boolean
       arg :likes_faxes, :boolean
       arg :likes_phone_calls, :boolean
-      resolve &UserResolver.update_a_user/3
+      resolve &UserResolver.update_user_preference/3
     end
   end
 end

@@ -14,7 +14,10 @@ defmodule GraphqlApiAssignment.Accounts do
   end
 
   def get_user(id) do
+    # Actions - preload: [:preferences] - Did not work
+    # Actions - preload: :preferences] - Did not work
     Actions.get(User, id)
+    |> GraphqlApiAssignment.Repo.preload(:preferences)
   end
 
   def update_user(id, params) do

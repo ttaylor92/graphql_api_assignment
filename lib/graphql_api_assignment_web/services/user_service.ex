@@ -17,9 +17,8 @@ defmodule GraphqlApiAssignmentWeb.Services.UserService do
     end
   end
 
-  def get_users_by_preferences(args) do
+  def get_users(args) do
     filtered_users = Accounts.get_users(args)
-    IO.inspect(filtered_users)
     {:ok, filtered_users}
   end
 
@@ -31,9 +30,9 @@ defmodule GraphqlApiAssignmentWeb.Services.UserService do
   end
 
   def update_user_preference(args) do
-    case get_user_by_id(args.id) do
+    case get_user_by_id(args.user_id) do
       {:ok, user} ->
-        preference_id = user.preference_id
+        preference_id = user.preferences.id
 
         case Accounts.update_user_preference(preference_id, args) do
           {:ok, preference} -> {:ok, preference}
