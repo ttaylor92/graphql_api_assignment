@@ -9,7 +9,8 @@ defmodule GraphqlApiAssignment.Application do
   def start(_type, _args) do
     children = [
       {Phoenix.PubSub, name: GraphqlApiAssignment.PubSub},
-      {DNSCluster, query: Application.get_env(:graphql_api_assignment, :dns_cluster_query) || :ignore},
+      {DNSCluster,
+       query: Application.get_env(:graphql_api_assignment, :dns_cluster_query) || :ignore},
       # Start the Finch HTTP client for sending emails
       {Finch, name: GraphqlApiAssignment.Finch},
       # Start a worker by calling: GraphqlApiAssignment.Worker.start_link(arg)

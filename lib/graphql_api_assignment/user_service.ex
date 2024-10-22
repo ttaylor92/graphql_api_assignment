@@ -1,8 +1,8 @@
-defmodule GraphqlApiAssignmentWeb.Services.UserService do
+defmodule GraphqlApiAssignment.UserService do
   alias GraphqlApiAssignment.Accounts
 
   def get_user_by_id(id) do
-    case Accounts.get_user(id) do
+    case Accounts.get_user(id, preload: :preferences) do
       nil -> {:error, message: "User not found"}
       user -> {:ok, user}
     end
@@ -10,7 +10,8 @@ defmodule GraphqlApiAssignmentWeb.Services.UserService do
 
   def create_user(args) do
     case Accounts.create_user(args) do
-      {:ok, user} -> {:ok, user}
+      {:ok, user} ->
+        {:ok, user}
 
       {:error, changeset} ->
         {:error, message: "There was an error creating the user", errors: errors_on(changeset)}
@@ -18,7 +19,7 @@ defmodule GraphqlApiAssignmentWeb.Services.UserService do
   end
 
   def get_users(args) do
-    filtered_users = Accounts.get_users(args)
+    filtered_users = Accounts.get_users(args, preload: :preferences)
     {:ok, filtered_users}
   end
 
@@ -35,11 +36,15 @@ defmodule GraphqlApiAssignmentWeb.Services.UserService do
         preference_id = user.preferences.id
 
         case Accounts.update_user_preference(preference_id, args) do
-          {:ok, preference} -> {:ok, preference}
-          {:error, changeset} -> {:error, message: "Error updating user preferences", errors: errors_on(changeset)}
+          {:ok, preference} ->
+            {:ok, preference}
+
+          {:error, changeset} ->
+            {:error, message: "Error updating user preferences", errors: errors_on(changeset)}
         end
 
-      {:error, message} -> {:error, message}
+      {:error, message} ->
+        {:error, message}
     end
   end
 

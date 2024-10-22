@@ -5,7 +5,7 @@ defmodule GraphqlApiAssignment.Accounts.User do
   schema "users" do
     field :name, :string
     field :email, :string
-    has_one :preferences, GraphqlApiAssignment.Accounts.Preference,  on_replace: :delete
+    has_one :preferences, GraphqlApiAssignment.Accounts.Preference, on_replace: :delete
 
     timestamps(type: :utc_datetime)
   end
@@ -23,5 +23,4 @@ defmodule GraphqlApiAssignment.Accounts.User do
     |> unique_constraint(:email)
     |> cast_assoc(:preferences)
   end
-
 end

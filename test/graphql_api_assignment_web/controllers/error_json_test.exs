@@ -2,7 +2,9 @@ defmodule GraphqlApiAssignmentWeb.ErrorJSONTest do
   use GraphqlApiAssignmentWeb.ConnCase, async: true
 
   test "renders 404" do
-    assert GraphqlApiAssignmentWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
+    assert GraphqlApiAssignmentWeb.ErrorJSON.render("404.json", %{}) == %{
+             errors: %{detail: "Not Found"}
+           }
   end
 
   test "renders 500" do

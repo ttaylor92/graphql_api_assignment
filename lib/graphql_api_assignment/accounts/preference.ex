@@ -20,5 +20,4 @@ defmodule GraphqlApiAssignment.Accounts.Preference do
     |> cast(attrs, @available_fields ++ @required_fields)
     |> validate_required(@required_fields)
   end
-
 end

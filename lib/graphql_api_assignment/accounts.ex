@@ -13,11 +13,10 @@ defmodule GraphqlApiAssignment.Accounts do
     Actions.create(User, params)
   end
 
-  def get_user(id) do
-    # Actions - preload: [:preferences] - Did not work
-    # Actions - preload: :preferences] - Did not work
-    Actions.get(User, id)
-    |> GraphqlApiAssignment.Repo.preload(:preferences)
+  def get_user(id, opts \\ []) do
+    User
+    |> Actions.get(id)
+    |> maybe_preload(opts)
   end
 
   def update_user(id, params) do
@@ -36,8 +35,16 @@ defmodule GraphqlApiAssignment.Accounts do
     Actions.update(Preference, id, params)
   end
 
-  def get_users(params) do
-    CommonFilters.convert_params_to_filter(User, params)
-    |> Actions.all(preload: :preferences)
+  def get_users(params, opts \\ []) do
+    User
+    |> CommonFilters.convert_params_to_filter(params)
+    |> maybe_preload(opts)
+  end
+
+  defp maybe_preload(schema_data, opts) do
+    case opts[:preload] do
+      nil -> schema_data
+      preload -> GraphqlApiAssignment.Repo.preload(schema_data, preload)
+    end
   end
 end

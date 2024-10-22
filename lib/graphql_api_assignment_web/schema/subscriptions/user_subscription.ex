@@ -1,30 +1,23 @@
 defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscription do
   use Absinthe.Schema.Notation
 
-  object :user_subscriptions do
+  alias GraphqlApiAssignmentWeb.Resolvers.UserResolver
 
+  object :user_subscriptions do
     @desc "Subscribe to successful user creations"
     field :created_user, :user_response do
-      trigger :create_user, topic: fn _ ->
-        "new_user"
-      end
+      trigger :create_user, topic: &UserResolver.create_user_trigger_topic/1
 
-      config fn _, _ ->
-        {:ok, topic: "new_user" }
-      end
+      config &UserResolver.create_user_subscription_config/2
     end
 
     @desc "Subscribe to User Preferences updates"
     field :updated_user_preferences, :preference_response do
       arg :user_id, non_null(:integer)
 
-      trigger :update_user_preferences, topic: fn preference_response ->
-        preference_response.user_id
-      end
+      trigger :update_user_preferences, topic: &UserResolver.update_user_preference_topic/1
 
-      config fn args, _ ->
-        {:ok, topic: args.user_id }
-      end
+      config &UserResolver.update_user_preference_subscription_config/2
     end
   end
 end

@@ -4,7 +4,6 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuery do
   alias GraphqlApiAssignmentWeb.Resolvers.UserResolver
 
   object :user_queries do
-
     @desc "Get a user by ID"
     field :user, :user_response do
       arg :id, non_null(:integer)
