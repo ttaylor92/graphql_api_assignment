@@ -1,4 +1,4 @@
-defmodule GraphqlApiAssignment.Accounts do
+defmodule GraphqlApiAssignment.Pg.AccountManagement do
   @moduledoc """
   The Accounts context.
 
@@ -6,8 +6,8 @@ defmodule GraphqlApiAssignment.Accounts do
   retrieval, updating, and deletion of user data.
   """
   alias EctoShorts.{Actions, CommonFilters}
-  alias GraphqlApiAssignment.Accounts.User
-  alias GraphqlApiAssignment.Accounts.Preference
+  alias GraphqlApiAssignment.Pg.AccountManagement.{User, Preference}
+  alias GraphqlApiAssignment.Repo
 
   def create_user(params) do
     Actions.create(User, params)
@@ -19,8 +19,13 @@ defmodule GraphqlApiAssignment.Accounts do
     |> maybe_preload(opts)
   end
 
-  def update_user(id, params) do
-    Actions.update(User, id, params)
+  def update_user(id, params, opts \\ []) do
+    User
+    |> Actions.update(id, params)
+    |> case do
+      {:error, error} -> {:error, error}
+      {:ok, schema_data} -> maybe_preload(schema_data, opts)
+    end
   end
 
   def delete_user(id) do
@@ -35,16 +40,17 @@ defmodule GraphqlApiAssignment.Accounts do
     Actions.update(Preference, id, params)
   end
 
-  def get_users(params, opts \\ []) do
+  def get_users(params \\ %{}, opts \\ []) do
     User
     |> CommonFilters.convert_params_to_filter(params)
+    |> Repo.all()
     |> maybe_preload(opts)
   end
 
   defp maybe_preload(schema_data, opts) do
     case opts[:preload] do
       nil -> schema_data
-      preload -> GraphqlApiAssignment.Repo.preload(schema_data, preload)
+      preload -> Repo.preload(schema_data, preload)
     end
   end
 end

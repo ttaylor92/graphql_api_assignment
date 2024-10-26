@@ -18,7 +18,8 @@ defmodule GraphqlApiAssignment.Application do
       # Start to serve requests, typically the last entry
       GraphqlApiAssignmentWeb.Endpoint,
       {Absinthe.Subscription, GraphqlApiAssignmentWeb.Endpoint},
-      GraphqlApiAssignment.Repo
+      GraphqlApiAssignment.Repo,
+      GraphqlApiAssignmentWeb.ResolverBucket
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

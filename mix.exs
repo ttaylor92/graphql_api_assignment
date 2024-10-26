@@ -47,7 +47,9 @@ defmodule GraphqlApiAssignment.MixProject do
       {:absinthe_phoenix, "~> 2.0"},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
-      {:ecto_shorts, "~> 2.4.0"}
+      {:ecto_shorts, "~> 2.4.0"},
+      {:factory_ex, "~> 0.1.0", only: :test},
+      {:faker, "~> 0.18", only: :test}
     ]
   end
 

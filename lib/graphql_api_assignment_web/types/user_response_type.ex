@@ -5,7 +5,7 @@ defmodule GraphqlApiAssignmentWeb.Types.UserResponseType do
     field :id, :integer
     field :name, :string
     field :email, :string
-    field :preferences, list_of(:preference_response)
+    field :preferences, :preference_response
   end
 
   object :preference_response do

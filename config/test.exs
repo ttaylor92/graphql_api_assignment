@@ -7,6 +7,13 @@ config :graphql_api_assignment, GraphqlApiAssignmentWeb.Endpoint,
   secret_key_base: "TY2c40DC/zXRVv5V62goALCzGfRB0TnsgqAlfNeRlcSMI6sM+yABI5/BOiWTzKEa",
   server: false
 
+config :graphql_api_assignment, GraphqlApiAssignment.Repo,
+  database: "graphql_api_assignment_repo_test",
+  username: "user",
+  password: "pass",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
+
 # In test we don't send emails
 config :graphql_api_assignment, GraphqlApiAssignment.Mailer, adapter: Swoosh.Adapters.Test
 
