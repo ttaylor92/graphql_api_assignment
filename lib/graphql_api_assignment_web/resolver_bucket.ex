@@ -16,19 +16,16 @@ defmodule GraphqlApiAssignmentWeb.ResolverBucket do
     GenServer.start_link(__MODULE__, initial_state, opts)
   end
 
-  @impl true
   def init(state) do
     {:ok, state}
   end
 
   # Server
-  @impl true
   def handle_cast(key, state) do
-    updated_state = Map.update(state, key, 1, fn value -> value + 1 end)
+    updated_state = Map.update(state, key, 0, fn value -> value + 1 end)
     {:noreply, updated_state}
   end
 
-  @impl true
   def handle_call(key, _from, state) do
     {:reply, Map.get(state, key), state}
   end

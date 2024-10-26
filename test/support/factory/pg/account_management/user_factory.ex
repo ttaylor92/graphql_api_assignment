@@ -11,7 +11,7 @@ defmodule GraphqlApiAssignment.Support.Factory.Pg.AccountManagement.UserFactory 
   def build(params \\ %{}) do
     default = %{
       name: "#{Faker.Person.first_name()} #{Faker.Person.last_name()}",
-      email: "user_email#{Faker.random_between(1, 500)}@email.com"
+      email: "user_email#{Faker.random_between(1, 5000)}@email.com"
     }
 
     Map.merge(default, params)

@@ -1,4 +1,4 @@
-defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQueriesTest do
+defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
   use GraphqlApiAssignment.Support.Datacase
 
   import Support.HelperFunctions, only: [setup_mock_accounts: 1]
