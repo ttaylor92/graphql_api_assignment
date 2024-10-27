@@ -36,11 +36,11 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{data: %{"createUser" => user}}} =
                Absinthe.run(@create_user_query, Schema, variables: variables)
 
-      assert user["name"] == "John Doe"
-      assert user["email"] == "john@example.com"
-      assert user["preferences"]["likesEmails"] == true
-      assert user["preferences"]["likesFaxes"] == false
-      assert user["preferences"]["likesPhoneCalls"] == true
+      assert user["name"] === "John Doe"
+      assert user["email"] === "john@example.com"
+      assert user["preferences"]["likesEmails"] === true
+      assert user["preferences"]["likesFaxes"] === false
+      assert user["preferences"]["likesPhoneCalls"] === true
     end
 
     test "does not create a user with invalid email format" do
@@ -57,7 +57,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{errors: errors}} =
                Absinthe.run(@create_user_query, Schema, variables: variables)
       error = List.first(errors)
-      assert error.message == "There was an error creating the user"
+      assert error.message === "There was an error creating the user"
       assert "has invalid format" in error.errors.email
     end
   end
@@ -87,8 +87,8 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{data: %{"updateUser" => updated_user}}} =
                Absinthe.run(@update_user_query, Schema, variables: variables)
 
-      assert updated_user["name"] == variables["name"]
-      assert updated_user["email"] == variables["email"]
+      assert updated_user["name"] === variables["name"]
+      assert updated_user["email"] === variables["email"]
     end
 
 
@@ -98,8 +98,8 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{data: %{"updateUser" => updated_user}}} =
                Absinthe.run(@update_user_query, Schema, variables: variables)
 
-      assert updated_user["name"] == variables["name"]
-      assert updated_user["email"] == context.user.email
+      assert updated_user["name"] === variables["name"]
+      assert updated_user["email"] === context.user.email
     end
 
     test "updates a user's email successfully", context do
@@ -108,8 +108,8 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{data: %{"updateUser" => updated_user}}} =
                Absinthe.run(@update_user_query, Schema, variables: variables)
 
-      assert updated_user["email"] == variables["email"]
-      assert updated_user["name"] == context.user.name
+      assert updated_user["email"] === variables["email"]
+      assert updated_user["name"] === context.user.name
     end
 
     test "cannot update a user with non-existent ID" do
@@ -120,7 +120,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{errors: errors}} =
                Absinthe.run(@update_user_query, Schema, variables: variables)
 
-      assert List.first(errors).message == message
+      assert List.first(errors).message === message
     end
   end
 
@@ -148,9 +148,9 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{data: %{"updateUserPreferences" => preferences}}} =
                Absinthe.run(@update_user_preferences_query, Schema, variables: variables)
 
-      assert preferences["likesEmails"] == true
-      assert preferences["likesFaxes"] == true
-      assert preferences["likesPhoneCalls"] == true
+      assert preferences["likesEmails"] === true
+      assert preferences["likesFaxes"] === true
+      assert preferences["likesPhoneCalls"] === true
     end
 
     test "updates user preference for likesEmails successfully", context do
@@ -162,7 +162,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{data: %{"updateUserPreferences" => preferences}}} =
                Absinthe.run(@update_user_preferences_query, Schema, variables: variables)
 
-      assert preferences["likesEmails"] == true
+      assert preferences["likesEmails"] === true
     end
 
     test "updates user preference for likesFaxes successfully", context do
@@ -174,7 +174,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{data: %{"updateUserPreferences" => preferences}}} =
                Absinthe.run(@update_user_preferences_query, Schema, variables: variables)
 
-      assert preferences["likesFaxes"] == true
+      assert preferences["likesFaxes"] === true
     end
 
     test "updates user preference for likesPhoneCalls successfully", context do
@@ -186,7 +186,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{data: %{"updateUserPreferences" => preferences}}} =
                Absinthe.run(@update_user_preferences_query, Schema, variables: variables)
 
-      assert preferences["likesPhoneCalls"] == true
+      assert preferences["likesPhoneCalls"] === true
     end
 
     test "updates user preferences with non-existent user ID" do
@@ -199,7 +199,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
 
       assert {:ok, %{errors: errors}} =
                Absinthe.run(@update_user_preferences_query, Schema, variables: variables)
-      assert List.first(errors).message ==  "User not found"
+      assert List.first(errors).message ===  "User not found"
     end
   end
 end
