@@ -89,12 +89,12 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
                Absinthe.run(@query_users, Schema, variables: variables)
 
       assert length(users) == 1
-      assert Enum.any?(users, fn user -> user["id"] == context.user.id end)
+      assert Enum.any?(users, fn user -> user["id"] === context.user.id end)
     end
 
     test "fetches users before a given ID", context do
       additional_user = UserFactory.insert!()
-      _additional_preference = PreferenceFactory.insert!(%{user_id: additional_user.id})
+      PreferenceFactory.insert!(%{user_id: additional_user.id})
 
       variables = %{"before" => additional_user.id}
 
@@ -102,12 +102,12 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
                Absinthe.run(@query_users, Schema, variables: variables)
 
       assert length(users) > 0
-      assert Enum.any?(users, fn user -> user["id"] == context.user.id end)
+      assert Enum.any?(users, fn user -> user["id"] === context.user.id end)
     end
 
     test "fetches users after a given ID", context do
       additional_user = UserFactory.insert!()
-      _additional_preference = PreferenceFactory.insert!(%{user_id: additional_user.id})
+      PreferenceFactory.insert!(%{user_id: additional_user.id})
 
       variables = %{"after" => context.user.id}
 
@@ -115,12 +115,11 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
                Absinthe.run(@query_users, Schema, variables: variables)
 
       assert length(users) > 0
-      assert Enum.any?(users, fn user -> user["id"] == additional_user.id end)
+      assert Enum.any?(users, fn user -> user["id"] === additional_user.id end)
     end
 
     test "fetches users with multiple parameters", context do
-      1..6
-      |> Enum.each(fn _ ->
+      Enum.each(1..6, fn _ ->
         user = UserFactory.insert!()
         PreferenceFactory.insert!(%{user_id: user.id})
       end)
@@ -132,7 +131,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
 
       assert length(users) > 0
       filtered_list = Enum.filter(users, fn user -> user["id"] < context.user.id + 6 end)
-      assert length(filtered_list) == 3
+      assert length(filtered_list) === 3
     end
   end
 end

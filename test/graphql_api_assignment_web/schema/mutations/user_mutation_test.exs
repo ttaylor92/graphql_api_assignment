@@ -191,7 +191,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
 
     test "updates user preferences with non-existent user ID" do
       variables = %{
-        "userId" => 99999,
+        "userId" => 99_999,
         "likesEmails" => false,
         "likesFaxes" => true,
         "likesPhoneCalls" => false
