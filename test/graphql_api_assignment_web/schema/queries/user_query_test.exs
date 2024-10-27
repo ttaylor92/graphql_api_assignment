@@ -34,13 +34,13 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
       assert {:ok, %{data: %{"user" => user}}} =
                Absinthe.run(@query_user, Schema, variables: variables)
 
-      assert user["id"] == context.user.id
-      assert user["name"] == context.user.name
-      assert user["email"] == context.user.email
-      assert user["preferences"]["likesEmails"] == context.preference.likes_emails
-      assert user["preferences"]["likesFaxes"] == context.preference.likes_faxes
-      assert user["preferences"]["likesPhoneCalls"] == context.preference.likes_phone_calls
-      assert user["preferences"]["userId"] == context.preference.user_id
+      assert user["id"] === context.user.id
+      assert user["name"] === context.user.name
+      assert user["email"] === context.user.email
+      assert user["preferences"]["likesEmails"] === context.preference.likes_emails
+      assert user["preferences"]["likesFaxes"] === context.preference.likes_faxes
+      assert user["preferences"]["likesPhoneCalls"] === context.preference.likes_phone_calls
+      assert user["preferences"]["userId"] === context.preference.user_id
     end
 
     test "returns an error when ID does not exist" do
@@ -49,7 +49,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
       assert {:ok, %{data: %{"user" => user}}} =
                Absinthe.run(@query_user, Schema, variables: variables)
 
-      assert user == nil
+      assert user === nil
     end
   end
 
@@ -79,7 +79,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
                Absinthe.run(@query_users, Schema, variables: variables)
 
       assert length(users) > 0
-      assert Enum.any?(users, fn user -> user["id"] == context.user.id end)
+      assert Enum.any?(users, fn user -> user["id"] === context.user.id end)
     end
 
     test "fetches users with preferences", context do
@@ -88,7 +88,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
       assert {:ok, %{data: %{"users" => users}}} =
                Absinthe.run(@query_users, Schema, variables: variables)
 
-      assert length(users) == 1
+      assert length(users) === 1
       assert Enum.any?(users, fn user -> user["id"] === context.user.id end)
     end
 

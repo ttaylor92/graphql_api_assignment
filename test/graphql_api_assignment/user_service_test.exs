@@ -105,8 +105,7 @@ defmodule GraphqlApiAssignment.UserServiceTest do
     end
 
     test "returns users after all params have been entered", context do
-      1..6
-      |> Enum.each(fn _ ->
+      Enum.each(1..6, fn _ ->
         user = UserFactory.insert!()
         PreferenceFactory.insert!(%{user_id: user.id})
       end)
