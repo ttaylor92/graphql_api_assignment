@@ -41,7 +41,7 @@ defmodule GraphqlApiAssignment.Pg.AccountManagement.UserTest do
       attrs = %{name: "John Doe", email: "JOHN.DOE@EXAMPLE.COM"}
       changeset = User.changeset(%User{}, attrs)
 
-      assert changeset.changes.email == "john.doe@example.com"
+      assert changeset.changes.email === "john.doe@example.com"
     end
   end
 end
