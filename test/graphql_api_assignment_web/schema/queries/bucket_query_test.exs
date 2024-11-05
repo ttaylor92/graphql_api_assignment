@@ -1,7 +1,7 @@
 defmodule GraphqlApiAssignmentWeb.Schema.Queries.BucketQueryTest do
   use GraphqlApiAssignment.Support.Datacase
 
-  alias GraphqlApiAssignmentWeb.ResolverBucket
+  alias GraphqlApiAssignment.ResolverBucket
   alias GraphqlApiAssignmentWeb.Schema
 
   @resolver_hits_query """

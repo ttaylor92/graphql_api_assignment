@@ -1,5 +1,5 @@
 defmodule GraphqlApiAssignment.UserService do
-  alias GraphqlApiAssignment.Pg.AccountManagement
+  alias GraphqlApiAssignment.SchemasPG.AccountManagement
 
   def get_user_by_id(id) do
     case AccountManagement.get_user(id, preload: :preferences) do
@@ -19,8 +19,7 @@ defmodule GraphqlApiAssignment.UserService do
   end
 
   def get_users(args) do
-    filtered_users = AccountManagement.get_users(args, preload: :preferences)
-    {:ok, filtered_users}
+    {:ok, AccountManagement.get_users(args)}
   end
 
   def update_a_user(args) do

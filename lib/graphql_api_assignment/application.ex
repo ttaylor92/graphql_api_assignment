@@ -19,7 +19,7 @@ defmodule GraphqlApiAssignment.Application do
       GraphqlApiAssignmentWeb.Endpoint,
       {Absinthe.Subscription, GraphqlApiAssignmentWeb.Endpoint},
       GraphqlApiAssignment.Repo,
-      GraphqlApiAssignmentWeb.ResolverBucket
+      GraphqlApiAssignment.ResolverBucket
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -1,6 +1,6 @@
-defmodule GraphqlApiAssignment.Pg.AccountManagement.PreferenceTest do
+defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.PreferenceTest do
   use ExUnit.Case
-  alias GraphqlApiAssignment.Pg.AccountManagement.Preference
+  alias GraphqlApiAssignment.SchemasPG.AccountManagement.Preference
 
   describe "changeset/2" do
     test "valid changeset with all available fields" do

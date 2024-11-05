@@ -15,6 +15,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuery do
       arg :before, :integer
       arg :after, :integer
       arg :first, :integer
+      arg :preferences, :preference_input
       resolve &UserResolver.get_users_by_preferences/3
     end
   end

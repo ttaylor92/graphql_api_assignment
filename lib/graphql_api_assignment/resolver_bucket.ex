@@ -1,5 +1,5 @@
-defmodule GraphqlApiAssignmentWeb.ResolverBucket do
-  use GenServer
+defmodule GraphqlApiAssignment.ResolverBucket do
+  use Agent
 
   @default_name __MODULE__
 
@@ -13,61 +13,57 @@ defmodule GraphqlApiAssignmentWeb.ResolverBucket do
       get_users: 0
     }
     opts = Keyword.put_new(opts, :name, @default_name)
-    GenServer.start_link(__MODULE__, initial_state, opts)
+    Agent.start_link(fn -> initial_state end, opts)
   end
 
-  def init(state) do
-    {:ok, state}
-  end
-
-  # Server
-  def handle_cast(key, state) do
-    updated_state = Map.update(state, key, 0, fn value -> value + 1 end)
-    {:noreply, updated_state}
-  end
-
-  def handle_call(key, _from, state) do
-    {:reply, Map.get(state, key), state}
-  end
-
-  # API
+  # Increment functions
   def increment_create_user(name \\ @default_name) do
-    GenServer.cast(name, :create_user)
+    increment_key(name, :create_user)
   end
 
   def increment_update_user(name \\ @default_name) do
-    GenServer.cast(name, :update_user)
+    increment_key(name, :update_user)
   end
 
   def increment_update_user_preferences(name \\ @default_name) do
-    GenServer.cast(name, :update_user_preferences)
+    increment_key(name, :update_user_preferences)
   end
 
   def increment_get_user(name \\ @default_name) do
-    GenServer.cast(name, :get_user)
+    increment_key(name, :get_user)
   end
 
   def increment_get_users(name \\ @default_name) do
-    GenServer.cast(name, :get_users)
+    increment_key(name, :get_users)
   end
 
+  # Retrieve count functions
   def get_create_user_count(name \\ @default_name) do
-    GenServer.call(name, :create_user)
+    get_key_count(name, :create_user)
   end
 
   def get_update_user_count(name \\ @default_name) do
-    GenServer.call(name, :update_user)
+    get_key_count(name, :update_user)
   end
 
   def get_update_user_preferences_count(name \\ @default_name) do
-    GenServer.call(name, :update_user_preferences)
+    get_key_count(name, :update_user_preferences)
   end
 
   def get_user_count(name \\ @default_name) do
-    GenServer.call(name, :get_user)
+    get_key_count(name, :get_user)
   end
 
   def get_users_count(name \\ @default_name) do
-    GenServer.call(name, :get_users)
+    get_key_count(name, :get_users)
+  end
+
+  # Private helpers
+  defp increment_key(name, key) do
+    Agent.update(name, fn state -> Map.update(state, key, 0, &(&1 + 1)) end)
+  end
+
+  defp get_key_count(name, key) do
+    Agent.get(name, &Map.get(&1, key))
   end
 end

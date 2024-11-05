@@ -1,6 +1,6 @@
 defmodule GraphqlApiAssignmentWeb.Resolvers.UserResolver do
   alias GraphqlApiAssignment.UserService
-  alias GraphqlApiAssignmentWeb.ResolverBucket
+  alias GraphqlApiAssignment.ResolverBucket
 
   def get_user_by_id(_, %{id: id}, _) do
     ResolverBucket.increment_get_user()

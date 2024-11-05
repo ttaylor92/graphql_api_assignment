@@ -1,4 +1,4 @@
-defmodule GraphqlApiAssignment.Pg.AccountManagement.User do
+defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.User do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -6,7 +6,7 @@ defmodule GraphqlApiAssignment.Pg.AccountManagement.User do
     field :name, :string
     field :email, :string
 
-    has_one :preferences, GraphqlApiAssignment.Pg.AccountManagement.Preference,
+    has_one :preferences, GraphqlApiAssignment.SchemasPG.AccountManagement.Preference,
       on_replace: :delete
 
     timestamps(type: :utc_datetime)
@@ -29,5 +29,13 @@ defmodule GraphqlApiAssignment.Pg.AccountManagement.User do
 
   def create_changeset(params \\ %{}) do
     changeset(%__MODULE__{}, params)
+  end
+
+  def data() do
+      Dataloader.Ecto.new(GraphqlApiAssignment.Repo, query: &query/2)
+  end
+
+  def query(queryable, _params) do
+    queryable
   end
 end

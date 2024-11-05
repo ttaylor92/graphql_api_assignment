@@ -1,7 +1,7 @@
-defmodule GraphqlApiAssignment.Support.Factory.Pg.AccountManagement.PreferenceFactory do
+defmodule GraphqlApiAssignment.Support.Factory.SchemasPG.AccountManagement.PreferenceFactory do
   @behaviour FactoryEx
 
-  @schema GraphqlApiAssignment.Pg.AccountManagement.Preference
+  @schema GraphqlApiAssignment.SchemasPG.AccountManagement.Preference
   @repo GraphqlApiAssignment.Repo
 
   def schema, do: @schema

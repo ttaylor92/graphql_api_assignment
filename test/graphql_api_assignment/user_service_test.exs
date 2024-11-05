@@ -4,11 +4,11 @@ defmodule GraphqlApiAssignment.UserServiceTest do
   import Support.HelperFunctions, only: [setup_mock_accounts: 1]
 
   alias GraphqlApiAssignment.UserService
-  alias GraphqlApiAssignment.Support.Factory.Pg.AccountManagement.{
+  alias GraphqlApiAssignment.Support.Factory.SchemasPG.AccountManagement.{
     PreferenceFactory,
     UserFactory
   }
-  alias GraphqlApiAssignment.Pg.AccountManagement.{
+  alias GraphqlApiAssignment.SchemasPG.AccountManagement.{
     Preference,
     User
   }
@@ -98,14 +98,14 @@ defmodule GraphqlApiAssignment.UserServiceTest do
       _additional_preference = PreferenceFactory.insert!(%{user_id: additional_user.id})
 
       user_id = additional_user.id
-      assert {:ok, response} = UserService.get_users(%{after: context.user.id})
+      assert {:ok, response} = UserService.get_users(%{after: 0})
       assert length(response) > 0
       found_user = Enum.find(response, fn user -> user.id === user_id end)
       assert found_user.id === user_id
     end
 
     test "returns users after all params have been entered", context do
-      Enum.each(1..6, fn _ ->
+      Enum.each(1..16, fn _ ->
         user = UserFactory.insert!()
         PreferenceFactory.insert!(%{user_id: user.id})
       end)
@@ -113,11 +113,35 @@ defmodule GraphqlApiAssignment.UserServiceTest do
       user_id = context.user.id
 
       assert {:ok, response} =
-               UserService.get_users(%{after: user_id, before: user_id + 6, first: 3})
+               UserService.get_users(%{after: user_id, before: user_id + 20, first: 3})
+
 
       assert length(response) > 0
       filtered_list = Enum.filter(response, fn user -> user.id < user_id + 6 end)
       assert length(filtered_list) === 3
+    end
+
+    test "returns users via preferences params" do
+      user = UserFactory.insert!()
+      PreferenceFactory.insert!(%{
+        user_id: user.id,
+        likes_emails: false,
+        likes_phone_calls: true,
+        likes_faxes: true
+      })
+
+      assert {:ok, [%User{
+        preferences: %{
+          likes_emails: false,
+          likes_phone_calls: true,
+          likes_faxes: true
+         }
+      } | _]} =
+               UserService.get_users(%{preferences: %{
+                likes_emails: false,
+                likes_phone_calls: true,
+                likes_faxes: true
+               }})
     end
   end
 

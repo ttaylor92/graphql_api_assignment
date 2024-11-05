@@ -1,7 +1,7 @@
-defmodule GraphqlApiAssignment.Pg.AccountManagement.UserTest do
+defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.UserTest do
   use GraphqlApiAssignment.Support.Datacase
   import GraphqlApiAssignment.Support.Datacase, only: [errors_on: 1]
-  alias GraphqlApiAssignment.Pg.AccountManagement.User
+  alias GraphqlApiAssignment.SchemasPG.AccountManagement.User
 
   describe "changeset/2" do
     test "valid changeset with required fields" do

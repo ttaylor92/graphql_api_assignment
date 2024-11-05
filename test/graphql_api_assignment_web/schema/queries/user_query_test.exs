@@ -5,7 +5,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
 
   alias GraphqlApiAssignmentWeb.Schema
 
-  alias GraphqlApiAssignment.Support.Factory.Pg.AccountManagement.{
+  alias GraphqlApiAssignment.Support.Factory.SchemasPG.AccountManagement.{
     PreferenceFactory,
     UserFactory
   }
@@ -57,8 +57,8 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
     setup [:setup_mock_accounts]
 
     @query_users """
-      query ($first: Int, $after: Int, $before: Int) {
-        users(first: $first, after: $after, before: $before) {
+      query ($first: Int, $after: Int, $before: Int, $preferences: PreferenceInput) {
+        users(first: $first, after: $after, before: $before, preferences: $preferences) {
           id
           name
           email

@@ -1,5 +1,5 @@
 defmodule GraphqlApiAssignmentWeb.Resolvers.BucketResolver do
-  alias GraphqlApiAssignmentWeb.ResolverBucket
+  alias GraphqlApiAssignment.ResolverBucket
 
   def get_resolver_hits(_, %{key: key}, _) do
     case key do

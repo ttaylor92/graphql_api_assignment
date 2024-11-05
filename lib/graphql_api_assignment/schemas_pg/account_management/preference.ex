@@ -1,4 +1,4 @@
-defmodule GraphqlApiAssignment.Pg.AccountManagement.Preference do
+defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.Preference do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -6,7 +6,7 @@ defmodule GraphqlApiAssignment.Pg.AccountManagement.Preference do
     field :likes_emails, :boolean, default: false
     field :likes_phone_calls, :boolean, default: false
     field :likes_faxes, :boolean, default: false
-    belongs_to :user, GraphqlApiAssignment.Pg.AccountManagement.User
+    belongs_to :user, GraphqlApiAssignment.SchemasPG.AccountManagement.User
 
     timestamps(type: :utc_datetime)
   end
@@ -23,5 +23,13 @@ defmodule GraphqlApiAssignment.Pg.AccountManagement.Preference do
 
   def create_changeset(params \\ %{}) do
     changeset(%__MODULE__{}, params)
+  end
+
+  def data() do
+    Dataloader.Ecto.new(GraphqlApiAssignment.Repo, query: &query/2)
+  end
+
+  def query(queryable, _params) do
+    queryable
   end
 end
