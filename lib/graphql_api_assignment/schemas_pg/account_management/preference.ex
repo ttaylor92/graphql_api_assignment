@@ -25,7 +25,7 @@ defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.Preference do
     changeset(%__MODULE__{}, params)
   end
 
-  def data() do
+  def data do
     Dataloader.Ecto.new(GraphqlApiAssignment.Repo, query: &query/2)
   end
 

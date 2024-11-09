@@ -1,6 +1,7 @@
 defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.User do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   schema "users" do
     field :name, :string
@@ -31,11 +32,19 @@ defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.User do
     changeset(%__MODULE__{}, params)
   end
 
-  def data() do
-      Dataloader.Ecto.new(GraphqlApiAssignment.Repo, query: &query/2)
+  def data do
+    Dataloader.Ecto.new(GraphqlApiAssignment.Repo, query: &query/2)
   end
 
   def query(queryable, _params) do
     queryable
+  end
+
+  def with_preferences_query(preferences \\ %{}) do
+    from(u in __MODULE__,
+      join: p in assoc(u, :preferences),
+      where: ^preferences,
+      select: %{u | preferences: p}
+    )
   end
 end
