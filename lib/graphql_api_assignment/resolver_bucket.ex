@@ -12,10 +12,10 @@ defmodule GraphqlApiAssignment.ResolverBucket do
 
   # API
   def increment_key(key, name \\ @default_name) do
-    Agent.update(name, fn state -> Map.update(state, key, 0, &(&1 + 1)) end)
+    Agent.update(name, fn state -> Map.update(state, key, 1, &(&1 + 1)) end)
   end
 
   def get_key_count(key, name \\ @default_name) do
-    Agent.get(name, &Map.get(&1, key))
+    Agent.get(name, &Map.get(&1, key, 0))
   end
 end

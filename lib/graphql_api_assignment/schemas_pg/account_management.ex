@@ -5,7 +5,6 @@ defmodule GraphqlApiAssignment.SchemasPG.AccountManagement do
   This context is responsible for managing user accounts, including creation,
   retrieval, updating, and deletion of user data.
   """
-  import Ecto.Query, only: [from: 2]
 
   alias EctoShorts.Actions
   alias GraphqlApiAssignment.SchemasPG.AccountManagement.{User, Preference}
@@ -41,12 +40,16 @@ defmodule GraphqlApiAssignment.SchemasPG.AccountManagement do
   end
 
   def get_users(params \\ %{}) do
-    preferences = Map.get(params, :preferences, %{})
-    options = Map.delete(params, :preferences)
+    preferences = params
+      |> Map.get(:preferences, %{})
+      |> Map.to_list()
 
-    query = User.with_preferences_query(preferences)
+    options = params
+      |> Map.delete(:preferences)
+      |> Map.keys()
+      |> Enum.map(fn key -> {key, Map.get(params, key)} end)
 
-    Actions.all(query, options)
+    Actions.all(Preference.with_preferences_query(preferences), options)
   end
 
   defp maybe_preload(schema_data, opts) do

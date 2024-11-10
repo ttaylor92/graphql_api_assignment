@@ -1,6 +1,7 @@
 defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.Preference do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   schema "preferences" do
     field :likes_emails, :boolean, default: false
@@ -31,5 +32,13 @@ defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.Preference do
 
   def query(queryable, _params) do
     queryable
+  end
+
+  def with_preferences_query(preferences \\ []) do
+    from(p in __MODULE__,
+      join: u in assoc(p, :user),
+      where: ^preferences,
+      select: %{u | preferences: p}
+    )
   end
 end

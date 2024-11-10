@@ -12,33 +12,33 @@ defmodule GraphqlApiAssignment.ResolverBucketTest do
     end
 
     test "increments create_user count", %{pid: pid} do
-      assert ResolverBucket.get_create_user_count(pid) === 0
-      ResolverBucket.increment_create_user(pid)
-      assert ResolverBucket.get_create_user_count(pid) === 1
+      assert ResolverBucket.get_key_count(:create_user, pid) === 0
+      ResolverBucket.increment_key(:create_user, pid)
+      assert ResolverBucket.get_key_count(:create_user, pid) === 1
     end
 
     test "increments update_user count", %{pid: pid} do
-      assert ResolverBucket.get_update_user_count(pid) === 0
-      ResolverBucket.increment_update_user(pid)
-      assert ResolverBucket.get_update_user_count(pid) === 1
+      assert ResolverBucket.get_key_count(:update_user, pid) === 0
+      ResolverBucket.increment_key(:update_user, pid)
+      assert ResolverBucket.get_key_count(:update_user, pid) === 1
     end
 
     test "increments update_user_preferences count", %{pid: pid} do
-      assert ResolverBucket.get_update_user_preferences_count(pid) === 0
-      ResolverBucket.increment_update_user_preferences(pid)
-      assert ResolverBucket.get_update_user_preferences_count(pid) === 1
+      assert ResolverBucket.get_key_count(:update_user_preferences, pid) === 0
+      ResolverBucket.increment_key(:update_user_preferences, pid)
+      assert ResolverBucket.get_key_count(:update_user_preferences, pid) === 1
     end
 
     test "increments get_user count", %{pid: pid} do
-      assert ResolverBucket.get_user_count(pid) === 0
-      ResolverBucket.increment_get_user(pid)
-      assert ResolverBucket.get_user_count(pid) === 1
+      assert ResolverBucket.get_key_count(:get_user, pid) === 0
+      ResolverBucket.increment_key(:get_user, pid)
+      assert ResolverBucket.get_key_count(:get_user, pid) === 1
     end
 
     test "increments get_users count", %{pid: pid} do
-      assert ResolverBucket.get_users_count(pid) === 0
-      ResolverBucket.increment_get_users(pid)
-      assert ResolverBucket.get_users_count(pid) === 1
+      assert ResolverBucket.get_key_count(:get_users, pid) === 0
+      ResolverBucket.increment_key(:get_users, pid)
+      assert ResolverBucket.get_key_count(:get_users, pid) === 1
     end
   end
 end
