@@ -9,13 +9,7 @@ defmodule GraphqlApiAssignment.UserService do
   end
 
   def create_user(args) do
-    case AccountManagement.create_user(args) do
-      {:ok, user} ->
-        {:ok, user}
-
-      {:error, changeset} ->
-        {:error, message: "There was an error creating the user", errors: errors_on(changeset)}
-    end
+    AccountManagement.create_user(args)
   end
 
   def get_users(args) do
@@ -24,7 +18,7 @@ defmodule GraphqlApiAssignment.UserService do
 
   def update_a_user(args) do
     case AccountManagement.update_user(args.id, args, preload: :preferences) do
-      {:error, changeset} -> changeset_to_error(changeset)
+      {:error, changeset} -> {:error, changeset}
       user -> {:ok, user}
     end
   end
@@ -33,14 +27,7 @@ defmodule GraphqlApiAssignment.UserService do
     case get_user_by_id(args.user_id) do
       {:ok, user} ->
         preference_id = user.preferences.id
-
-        case AccountManagement.update_user_preference(preference_id, args) do
-          {:ok, preference} ->
-            {:ok, preference}
-
-          {:error, changeset} ->
-            changeset_to_error(changeset)
-        end
+        AccountManagement.update_user_preference(preference_id, args)
 
       {:error, message} ->
         {:error, message}

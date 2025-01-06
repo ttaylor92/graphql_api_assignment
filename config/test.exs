@@ -10,7 +10,7 @@ config :graphql_api_assignment, GraphqlApiAssignmentWeb.Endpoint,
 config :graphql_api_assignment, GraphqlApiAssignment.Repo,
   database: "graphql_api_assignment_repo_test",
   username: "user",
-  password: "pass",
+  password: "password",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
 

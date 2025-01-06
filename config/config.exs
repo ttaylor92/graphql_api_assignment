@@ -10,7 +10,7 @@ import Config
 config :graphql_api_assignment, GraphqlApiAssignment.Repo,
   database: "graphql_api_assignment_repo",
   username: "user",
-  password: "pass",
+  password: "password",
   hostname: "localhost"
 
 config :graphql_api_assignment,

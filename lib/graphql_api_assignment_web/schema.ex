@@ -4,6 +4,7 @@ defmodule GraphqlApiAssignmentWeb.Schema do
   alias GraphqlApiAssignment.SchemasPG.AccountManagement.{Preference, User}
   alias GraphqlApiAssignmentWeb.Schema.{Queries, Mutations, Subscriptions}
   alias GraphqlApiAssignmentWeb.Types
+  alias GraphqlApiAssignment.Middlewares
 
   import_types Types.{UserInputType, UserResponseType, BucketInputType}
   import_types Queries.{UserQuery, BucketQuery}
@@ -34,5 +35,21 @@ defmodule GraphqlApiAssignmentWeb.Schema do
 
   def plugins do
     [Absinthe.Middleware.Dataloader] ++ Absinthe.Plugin.defaults()
+  end
+
+  def middleware(middleware, _, %{identifier: identifier}) when identifier === :mutation do
+    pre_resolution_middleware() ++ middleware ++ post_resolution_middleware()
+  end
+
+  def middleware(middleware, _, _) do
+    middleware
+  end
+
+  defp pre_resolution_middleware do
+    []
+  end
+
+  defp post_resolution_middleware do
+    [Middlewares.ChangesetConverterMiddleware]
   end
 end

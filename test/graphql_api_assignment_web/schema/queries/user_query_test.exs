@@ -4,7 +4,6 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
   import Support.HelperFunctions, only: [setup_mock_accounts: 1]
 
   alias GraphqlApiAssignmentWeb.Schema
-
   alias GraphqlApiAssignment.Support.Factory.SchemasPG.AccountManagement.{
     PreferenceFactory,
     UserFactory
@@ -106,7 +105,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
     end
 
     test "fetches users after a given ID", context do
-      additional_user = UserFactory.insert!()
+      assert additional_user = UserFactory.insert!()
       PreferenceFactory.insert!(%{user_id: additional_user.id})
 
       variables = %{"after" => context.user.id}
