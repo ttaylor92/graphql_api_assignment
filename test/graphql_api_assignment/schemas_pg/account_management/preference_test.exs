@@ -1,5 +1,6 @@
 defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.PreferenceTest do
-  use ExUnit.Case
+  use GraphqlApiAssignment.Support.Datacase
+
   alias GraphqlApiAssignment.SchemasPG.AccountManagement.Preference
 
   describe "changeset/2" do

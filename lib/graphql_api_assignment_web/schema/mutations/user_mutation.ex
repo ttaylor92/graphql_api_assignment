@@ -1,6 +1,7 @@
 defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutation do
   use Absinthe.Schema.Notation
 
+  alias GraphqlApiAssignment.Middlewares
   alias GraphqlApiAssignmentWeb.Resolvers.UserResolver
 
   object :user_mutations do
@@ -17,6 +18,9 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutation do
       arg :id, non_null(:integer)
       arg :name, :string
       arg :email, :string
+
+      middleware Middlewares.AuthMiddleware, secret_key: "Imsecret"
+
       resolve &UserResolver.update_a_user/3
     end
 
@@ -26,6 +30,9 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutation do
       arg :likes_emails, :boolean
       arg :likes_faxes, :boolean
       arg :likes_phone_calls, :boolean
+
+      middleware Middlewares.AuthMiddleware, secret_key: "Imsecret"
+
       resolve &UserResolver.update_user_preference/3
     end
   end

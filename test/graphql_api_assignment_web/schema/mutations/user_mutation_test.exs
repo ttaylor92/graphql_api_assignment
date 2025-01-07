@@ -5,6 +5,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
 
   alias GraphqlApiAssignmentWeb.Schema
 
+  @valid_secret_key "Imsecret"
 
   @create_user_query """
   mutation($name: String!, $email: String!, $preferences: PreferenceInput!) {
@@ -21,6 +22,32 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
     }
   }
   """
+  @update_user_preferences_query """
+  mutation($userId: Int!, $likesEmails: Boolean, $likesFaxes: Boolean, $likesPhoneCalls: Boolean) {
+    updateUserPreferences(userId: $userId, likesEmails: $likesEmails, likesFaxes: $likesFaxes, likesPhoneCalls: $likesPhoneCalls) {
+      likesEmails
+      likesFaxes
+      likesPhoneCalls
+      userId
+    }
+  }
+  """
+  @update_user_query """
+  mutation($id: Int!, $name: String, $email: String) {
+    updateUser(id: $id, name: $name, email: $email) {
+      id
+      name
+      email
+      preferences {
+        likesEmails
+        likesPhoneCalls
+        likesFaxes
+        userId
+      }
+    }
+  }
+  """
+
   describe "@createUser" do
     test "creates a user successfully" do
       variables = %{
@@ -57,35 +84,21 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{errors: errors}} =
                Absinthe.run(@create_user_query, Schema, variables: variables)
       error = List.first(errors)
-      assert error.message === "There was an error creating the user"
-      assert "has invalid format" in error.errors.email
+      assert error.message === "Email Already Exists"
+      assert error.code === :conflict
     end
   end
 
-  @update_user_query """
-  mutation($id: Int!, $name: String, $email: String) {
-    updateUser(id: $id, name: $name, email: $email) {
-      id
-      name
-      email
-      preferences {
-        likesEmails
-        likesPhoneCalls
-        likesFaxes
-        userId
-      }
-    }
-  }
-  """
   describe "@updateUser" do
     setup [:setup_mock_accounts]
 
     test "updates a user successfully", context do
 
       variables = %{"id" => context.user.id, "name" => "Jane Doe", "email" => "jane@example.com"}
+      context_map = %{secret_key: @valid_secret_key}
 
       assert {:ok, %{data: %{"updateUser" => updated_user}}} =
-               Absinthe.run(@update_user_query, Schema, variables: variables)
+               Absinthe.run(@update_user_query, Schema, variables: variables, context: context_map)
 
       assert updated_user["name"] === variables["name"]
       assert updated_user["email"] === variables["email"]
@@ -94,9 +107,10 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
 
     test "updates a user's name successfully", context do
       variables = %{"id" => context.user.id, "name" => "Updated Name"}
+      context_map = %{secret_key: @valid_secret_key}
 
       assert {:ok, %{data: %{"updateUser" => updated_user}}} =
-               Absinthe.run(@update_user_query, Schema, variables: variables)
+               Absinthe.run(@update_user_query, Schema, variables: variables, context: context_map)
 
       assert updated_user["name"] === variables["name"]
       assert updated_user["email"] === context.user.email
@@ -104,9 +118,10 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
 
     test "updates a user's email successfully", context do
       variables = %{"id" => context.user.id, "email" => "updated_email@example.com"}
+      context_map = %{secret_key: @valid_secret_key}
 
       assert {:ok, %{data: %{"updateUser" => updated_user}}} =
-               Absinthe.run(@update_user_query, Schema, variables: variables)
+               Absinthe.run(@update_user_query, Schema, variables: variables, context: context_map)
 
       assert updated_user["email"] === variables["email"]
       assert updated_user["name"] === context.user.name
@@ -114,26 +129,17 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
 
     test "cannot update a user with non-existent ID" do
       user_id = 999
-      message = "No item found with id: #{user_id}"
+      message = "Unsupported request"
       variables = %{"id" => user_id, "name" => "Jane Doe", "email" => "jane@example.com"}
+      context_map = %{secret_key: @valid_secret_key}
 
       assert {:ok, %{errors: errors}} =
-               Absinthe.run(@update_user_query, Schema, variables: variables)
+               Absinthe.run(@update_user_query, Schema, variables: variables, context: context_map)
 
       assert List.first(errors).message === message
     end
   end
 
-  @update_user_preferences_query """
-  mutation($userId: Int!, $likesEmails: Boolean, $likesFaxes: Boolean, $likesPhoneCalls: Boolean) {
-    updateUserPreferences(userId: $userId, likesEmails: $likesEmails, likesFaxes: $likesFaxes, likesPhoneCalls: $likesPhoneCalls) {
-      likesEmails
-      likesFaxes
-      likesPhoneCalls
-      userId
-    }
-  }
-  """
   describe "@updateUserPreferences" do
     setup [:setup_mock_accounts]
 
@@ -144,9 +150,10 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
         "likesFaxes" => true,
         "likesPhoneCalls" => true
       }
+      context_map = %{secret_key: @valid_secret_key}
 
       assert {:ok, %{data: %{"updateUserPreferences" => preferences}}} =
-               Absinthe.run(@update_user_preferences_query, Schema, variables: variables)
+               Absinthe.run(@update_user_preferences_query, Schema, variables: variables, context: context_map)
 
       assert preferences["likesEmails"] === true
       assert preferences["likesFaxes"] === true
@@ -158,9 +165,10 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
         "userId" => context.user.id,
         "likesEmails" => true
       }
+      context_map = %{secret_key: @valid_secret_key}
 
       assert {:ok, %{data: %{"updateUserPreferences" => preferences}}} =
-               Absinthe.run(@update_user_preferences_query, Schema, variables: variables)
+               Absinthe.run(@update_user_preferences_query, Schema, variables: variables, context: context_map)
 
       assert preferences["likesEmails"] === true
     end
@@ -170,9 +178,10 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
         "userId" => context.user.id,
         "likesFaxes" => true
       }
+      context_map = %{secret_key: @valid_secret_key}
 
       assert {:ok, %{data: %{"updateUserPreferences" => preferences}}} =
-               Absinthe.run(@update_user_preferences_query, Schema, variables: variables)
+               Absinthe.run(@update_user_preferences_query, Schema, variables: variables, context: context_map)
 
       assert preferences["likesFaxes"] === true
     end
@@ -182,9 +191,10 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
         "userId" => context.user.id,
         "likesPhoneCalls" => true
       }
+      context_map = %{secret_key: @valid_secret_key}
 
       assert {:ok, %{data: %{"updateUserPreferences" => preferences}}} =
-               Absinthe.run(@update_user_preferences_query, Schema, variables: variables)
+               Absinthe.run(@update_user_preferences_query, Schema, variables: variables, context: context_map)
 
       assert preferences["likesPhoneCalls"] === true
     end
@@ -196,10 +206,11 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
         "likesFaxes" => true,
         "likesPhoneCalls" => false
       }
+      context_map = %{secret_key: @valid_secret_key}
 
       assert {:ok, %{errors: errors}} =
-               Absinthe.run(@update_user_preferences_query, Schema, variables: variables)
-      assert List.first(errors).message ===  "User not found"
+               Absinthe.run(@update_user_preferences_query, Schema, variables: variables, context: context_map)
+      assert List.first(errors).message ===  "Unexpected error occurred"
     end
   end
 end

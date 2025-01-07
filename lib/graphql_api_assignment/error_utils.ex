@@ -36,6 +36,10 @@ defmodule GraphqlApiAssignment.ErrorUtils do
     create_error(:bad_request, message, details)
   end
 
+  @spec unauthorized() :: error_response()
+  def unauthorized do
+    create_error(:unauthorized, "You are not allowed to access this resource.", %{})
+  end
 
   defp create_error(code, message, details) do
     %{code: code, details: details, message: message}

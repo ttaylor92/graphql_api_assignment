@@ -16,22 +16,22 @@ defmodule GraphqlApiAssignment.UserServiceTest do
   describe "&create_user/1" do
     test "returns error when no name is given" do
       assert {:error, response} = UserService.create_user(%{name: "", email: "tester@mail.com"})
-      {:errors, error_map} = List.keyfind(response, :errors, 0)
-      assert "can't be blank" in error_map.name
+      error_keyword_list = Map.get(response, :errors)
+      assert {"can't be blank", [validation: :required]} = Keyword.get(error_keyword_list, :name)
     end
 
     test "returns error when no email is given" do
       assert {:error, response} = UserService.create_user(%{name: "Johnny"})
-      {:errors, error_map} = List.keyfind(response, :errors, 0)
-      assert "can't be blank" in error_map.email
+      error_keyword_list = Map.get(response, :errors)
+      assert {"can't be blank", [validation: :required]} = Keyword.get(error_keyword_list, :email)
     end
 
     test "returns error when no email is invalid" do
       assert {:error, response} =
                UserService.create_user(%{name: "Johnny", email: "sometext.com"})
 
-      {:errors, error_map} = List.keyfind(response, :errors, 0)
-      assert "has invalid format" in error_map.email
+      error_keyword_list = Map.get(response, :errors)
+      assert {"has invalid format", [validation: :format]} = Keyword.get(error_keyword_list, :email)
     end
 
     test "returns user when successful" do
@@ -93,7 +93,7 @@ defmodule GraphqlApiAssignment.UserServiceTest do
       assert found_user.id === user_id
     end
 
-    test "returns users after a given id via after param", context do
+    test "returns users after a given id via after param" do
       additional_user = UserFactory.insert!()
       _additional_preference = PreferenceFactory.insert!(%{user_id: additional_user.id})
 
@@ -169,7 +169,7 @@ defmodule GraphqlApiAssignment.UserServiceTest do
       message = "No item found with id: #{user_id}"
 
       assert {:error, response} = UserService.update_a_user(%{id: user_id})
-      assert ^message = Keyword.fetch!(response, :message)
+      assert ^message = Map.get(response, :message)
     end
   end
 

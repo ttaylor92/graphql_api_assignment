@@ -38,6 +38,12 @@ defmodule GraphqlApiAssignment.Middlewares.ChangesetConverterMiddleware do
     |> handle_error(tail)
   end
 
+  defp handle_error(resolution, [head | tail]) when is_binary(head) === true do
+    resolution
+    |> update_resolution(ErrorUtils.unauthorized())
+    |> handle_error(tail)
+  end
+
   defp handle_error(resolution, [head | tail]) do
     resolution
     |> handle_unexpected_error(head)
