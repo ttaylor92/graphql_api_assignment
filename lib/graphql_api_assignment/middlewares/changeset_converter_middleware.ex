@@ -20,8 +20,12 @@ defmodule GraphqlApiAssignment.Middlewares.ChangesetConverterMiddleware do
     error_list = Changeset.traverse_errors(head, &translate_error/1)
 
     value =
-      if Enum.any?(head.errors, fn {field, _} -> field == :email end) do
-        ErrorUtils.conflict("Email Already Exists", error_list)
+      if Enum.any?(head.errors, fn {field, _} -> field === :email end) do
+        if Map.get(error_list, :email) === ["has already been taken"] do
+          ErrorUtils.conflict("Email Already Exists", error_list)
+        else
+          ErrorUtils.bad_request("Email #{List.first(Map.get(error_list, :email))}", error_list)
+        end
       else
         ErrorUtils.bad_request("Unsupported request", error_list)
       end

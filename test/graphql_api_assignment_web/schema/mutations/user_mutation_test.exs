@@ -3,6 +3,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
 
   import Support.HelperFunctions, only: [setup_mock_accounts: 1]
 
+  alias GraphqlApiAssignment.Support.Factory.SchemasPG.AccountManagement.UserFactory
   alias GraphqlApiAssignmentWeb.Schema
 
   @valid_secret_key "Imsecret"
@@ -138,6 +139,51 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
 
       assert List.first(errors).message === message
     end
+
+    # MIDDLEWARE CHECKS
+    test "denies access to update with incorrect secret key", context do
+      variables = %{"id" => context.user.id, "name" => "Jane Doe", "email" => "jane@example.com"}
+      context_map = %{secret_key: "random_key"}
+
+      assert {:ok, %{errors: [%{
+        code: :unauthorized,
+         message: "You are not allowed to access this resource."
+      }]}} =
+               Absinthe.run(@update_user_query, Schema, variables: variables, context: context_map)
+    end
+
+    test "cannot update user to an existing email", context do
+      _another_user = UserFactory.insert!(%{email: "test@mail.com"})
+      variables = %{"id" => context.user.id, "name" => "Jane Doe", "email" => "test@mail.com"}
+      context_map = %{secret_key: @valid_secret_key}
+
+      assert {:ok, %{errors: [%{
+        code: :conflict,
+         message: "Email Already Exists"
+      }]}} =
+               Absinthe.run(@update_user_query, Schema, variables: variables, context: context_map)
+    end
+
+    test "cannot update user to an invalid email", context do
+      variables = %{"id" => context.user.id, "name" => "Jane Doe", "email" => "idkman"}
+      context_map = %{secret_key: @valid_secret_key}
+
+      assert {:ok, %{errors: [%{
+        code: :bad_request,
+         message: "Email has invalid format"
+      }]}} = Absinthe.run(@update_user_query, Schema, variables: variables, context: context_map)
+    end
+
+    test "cannot update user to an invalid name", context do
+      variables = %{"id" => context.user.id, "name" => "J", "email" => "idkman@mail.com"}
+      context_map = %{secret_key: @valid_secret_key}
+
+      assert {:ok, %{errors: [%{
+        code: :bad_request,
+         message: "Unsupported request",
+         details: %{name: ["should be at least 3 character(s)"]}
+      }]}} = Absinthe.run(@update_user_query, Schema, variables: variables, context: context_map)
+    end
   end
 
   describe "@updateUserPreferences" do
@@ -211,6 +257,21 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{errors: errors}} =
                Absinthe.run(@update_user_preferences_query, Schema, variables: variables, context: context_map)
       assert List.first(errors).message ===  "Unexpected error occurred"
+    end
+
+    test "denies access to update with incorrect secret key", context do
+      variables = %{
+        "userId" => context.user.id,
+        "likesEmails" => true,
+        "likesFaxes" => true,
+        "likesPhoneCalls" => true
+      }
+      context_map = %{secret_key: "random_key"}
+
+      assert {:ok, %{errors: [%{
+        code: :unauthorized,
+         message: "You are not allowed to access this resource."
+      }]}} = Absinthe.run(@update_user_preferences_query, Schema, variables: variables, context: context_map)
     end
   end
 end

@@ -10,7 +10,7 @@ defmodule GraphqlApiAssignmentWeb.Router do
 
     forward "/graphql", Absinthe.Plug, schema: GraphqlApiAssignmentWeb.Schema
 
-    if Mix.env() == :dev do
+    if Mix.env() === :dev do
       forward "/graphiql", Absinthe.Plug.GraphiQL,
         interface: :playground,
         schema: GraphqlApiAssignmentWeb.Schema,

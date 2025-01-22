@@ -6,7 +6,7 @@ defmodule GraphqlApiAssignment.Middlewares.AuthMiddleware do
   def call(%Resolution{context: %{secret_key: provided_key}} = resolution, opts) do
     expected_key = Keyword.get(opts, :secret_key, nil)
 
-    if provided_key == expected_key do
+    if provided_key === expected_key do
       resolution
     else
       Resolution.put_result(resolution, {:error, "unauthorized"})
