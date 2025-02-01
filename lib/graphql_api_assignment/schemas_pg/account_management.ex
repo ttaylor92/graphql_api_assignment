@@ -39,6 +39,10 @@ defmodule GraphqlApiAssignment.SchemasPG.AccountManagement do
     Actions.update(Preference, id, params)
   end
 
+  def get_user_ids(limit \\ 3) when is_integer(limit) do
+    Actions.all(User.get_user_ids(limit))
+  end
+
   def get_users(params \\ %{}) do
     preferences = params
       |> Map.get(:preferences, %{})

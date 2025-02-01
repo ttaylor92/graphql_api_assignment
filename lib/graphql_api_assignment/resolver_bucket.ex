@@ -4,7 +4,6 @@ defmodule GraphqlApiAssignment.ResolverBucket do
   @default_name __MODULE__
   @table_name :bucket
 
-  # API
   def start_link(opts \\ []) do
     table_name = Keyword.get(opts, :table_name, @table_name)
     opts = Keyword.put_new(opts, :name, @default_name)

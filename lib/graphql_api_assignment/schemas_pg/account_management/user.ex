@@ -1,6 +1,7 @@
 defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.User do
   use Ecto.Schema
   import Ecto.Changeset
+  import Ecto.Query
 
   schema "users" do
     field :name, :string
@@ -37,5 +38,9 @@ defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.User do
 
   def query(queryable, _params) do
     queryable
+  end
+
+  def get_user_ids(limit) do
+    from(u in __MODULE__, select: u.id, limit: ^limit)
   end
 end

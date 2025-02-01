@@ -50,7 +50,8 @@ defmodule GraphqlApiAssignment.MixProject do
       {:ecto_shorts, "~> 2.4.0"},
       {:factory_ex, "~> 0.1.0", only: :test},
       {:faker, "~> 0.18", only: :test},
-      {:dataloader, "~> 1.0.0"}
+      {:dataloader, "~> 1.0.0"},
+      {:gen_stage, "~> 1.2.1"}
     ]
   end
 
