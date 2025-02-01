@@ -1,5 +1,6 @@
 defmodule GraphqlApiAssignment.TokenPipeline.TokenConsumer do
   use GenStage
+  alias GraphqlApiAssignment.TokenPipeline
 
   @default_name __MODULE__
 
@@ -9,7 +10,7 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenConsumer do
   end
 
   def init(state) do
-    {:consumer, state, subscribe_to: [GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer]}
+    {:consumer, state, subscribe_to: [TokenPipeline.TokenProducerConsumer]}
   end
 
   def handle_events(user_tokens, _from, state) do
