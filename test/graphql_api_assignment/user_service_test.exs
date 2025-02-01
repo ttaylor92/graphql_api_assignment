@@ -88,7 +88,7 @@ defmodule GraphqlApiAssignment.UserServiceTest do
 
       user_id = context.user.id
       assert {:ok, response} = UserService.get_users(%{before: additional_user.id})
-      assert length(response) > 0
+      assert Enum.empty?(response) === false
       found_user = Enum.find(response, fn user -> user.id === user_id end)
       assert found_user.id === user_id
     end
@@ -99,7 +99,7 @@ defmodule GraphqlApiAssignment.UserServiceTest do
 
       user_id = additional_user.id
       assert {:ok, response} = UserService.get_users(%{after: 0})
-      assert length(response) > 0
+      assert Enum.empty?(response) === false
       found_user = Enum.find(response, fn user -> user.id === user_id end)
       assert found_user.id === user_id
     end
@@ -116,7 +116,7 @@ defmodule GraphqlApiAssignment.UserServiceTest do
                UserService.get_users(%{after: user_id, before: user_id + 20, first: 3})
 
 
-      assert length(response) > 0
+      assert Enum.empty?(response) === false
       filtered_list = Enum.filter(response, fn user -> user.id < user_id + 6 end)
       assert length(filtered_list) === 3
     end

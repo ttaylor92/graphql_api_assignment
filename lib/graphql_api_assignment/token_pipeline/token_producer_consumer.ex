@@ -10,7 +10,7 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer do
   end
 
   def init(state) do
-    {:producer_consumer, state, subscribe_to: [TokenPipeline.TokenProducer]}
+    {:producer_consumer, state, subscribe_to: [{TokenPipeline.TokenProducer, max_demand: 5}]}
   end
 
   def handle_events(users, _from, state) do

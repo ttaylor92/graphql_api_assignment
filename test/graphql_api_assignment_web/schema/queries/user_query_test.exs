@@ -77,7 +77,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
       assert {:ok, %{data: %{"users" => users}}} =
                Absinthe.run(@query_users, Schema, variables: variables)
 
-      assert length(users) > 0
+      assert Enum.empty?(users) === false
       assert Enum.any?(users, fn user -> user["id"] === context.user.id end)
     end
 
@@ -100,7 +100,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
       assert {:ok, %{data: %{"users" => users}}} =
                Absinthe.run(@query_users, Schema, variables: variables)
 
-      assert length(users) > 0
+      assert Enum.empty?(users) === false
       assert Enum.any?(users, fn user -> user["id"] === context.user.id end)
     end
 
@@ -113,7 +113,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
       assert {:ok, %{data: %{"users" => users}}} =
                Absinthe.run(@query_users, Schema, variables: variables)
 
-      assert length(users) > 0
+      assert Enum.empty?(users) === false
       assert Enum.any?(users, fn user -> user["id"] === additional_user.id end)
     end
 
@@ -128,7 +128,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
       assert {:ok, %{data: %{"users" => users}}} =
                Absinthe.run(@query_users, Schema, variables: variables)
 
-      assert length(users) > 0
+      assert Enum.empty?(users) === false
       filtered_list = Enum.filter(users, fn user -> user["id"] < context.user.id + 6 end)
       assert length(filtered_list) === 3
     end

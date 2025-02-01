@@ -1,4 +1,5 @@
 defmodule GraphqlApiAssignmentWeb.Types.UserResponseType do
+  alias GraphqlApiAssignmentWeb.Resolvers.UserResolver
   use Absinthe.Schema.Notation
 
   object :user_response do
@@ -6,6 +7,10 @@ defmodule GraphqlApiAssignmentWeb.Types.UserResponseType do
     field :name, :string
     field :email, :string
     field :preferences, :preference_response
+
+    field :auth_token, :string do
+      resolve &UserResolver.get_user_auth_token/2
+    end
   end
 
   object :preference_response do

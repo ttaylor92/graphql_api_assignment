@@ -6,7 +6,7 @@ defmodule GraphqlApiAssignmentWeb.Schema do
   alias GraphqlApiAssignmentWeb.Types
   alias GraphqlApiAssignment.Middlewares
 
-  import_types Types.{UserInputType, UserResponseType, BucketInputType}
+  import_types Types.{UserInputType, UserResponseType, BucketInputType, TokenResponseType}
   import_types Queries.{UserQuery, BucketQuery}
   import_types Mutations.UserMutation
   import_types Subscriptions.UserSubscription

@@ -42,4 +42,12 @@ defmodule GraphqlApiAssignmentWeb.Resolvers.UserResolver do
   def update_user_preference_subscription_config(preference_response, _) do
     {:ok, topic: preference_response.user_id}
   end
+
+  def user_token_created_subscription_config(response, _) do
+    {:ok, topic: response.user_id}
+  end
+
+  def get_user_auth_token(%{id: id}, _) do
+    {:ok, GraphqlApiAssignment.TokenCache.get(id)}
+  end
 end
