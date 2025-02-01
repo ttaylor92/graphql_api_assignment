@@ -9,19 +9,14 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenConsumer do
   end
 
   def init(state) do
-    {:consumer, state, subscribe_to: [GraphqlApiAssignment.TokenPipeline.TokenProducer]}
+    {:consumer, state, subscribe_to: [GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer]}
   end
 
-  def handle_events(users, _from, state) do
-    for user_id <- users do
-      token = generate_token(user_id)
+  def handle_events(user_tokens, _from, state) do
+    for {user_id, token} <- user_tokens do
       GraphqlApiAssignment.TokenCache.put(user_id, token)
-      IO.puts("Generated token for user #{user_id}: #{token}")
+      IO.puts("Added token for user #{user_id}")
     end
     {:noreply, [], state}
-  end
-
-  defp generate_token(user_id) do
-    :crypto.strong_rand_bytes(16) |> Base.encode64() |> Kernel.<>("#{user_id}")
   end
 end

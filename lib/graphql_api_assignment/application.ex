@@ -22,6 +22,7 @@ defmodule GraphqlApiAssignment.Application do
       GraphqlApiAssignment.ResolverBucket,
       GraphqlApiAssignment.TokenCache,
       {GraphqlApiAssignment.TokenPipeline.TokenProducer, []},
+      {GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer, []},
       {GraphqlApiAssignment.TokenPipeline.TokenConsumer, []}
     ]
 
