@@ -14,6 +14,6 @@ defmodule GraphqlApiAssignment.Middlewares.AuthMiddleware do
   end
 
   def call(resolution, _opts) do
-    Resolution.put_result(resolution, {:error, "unauthorized"})
+    resolution
   end
 end
