@@ -31,6 +31,12 @@ defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscriptionTest do
   }
   """
 
+  @user_auth_token_subscription """
+  subscription userAuthToken($userId: String!) {
+    userAuthToken(userId: $userId)
+  }
+  """
+
   describe "@user" do
     setup [:setup_mock_accounts, :setup_socket]
 
@@ -127,6 +133,31 @@ defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscriptionTest do
                  }
                }
              } = data
+    end
+
+    test "user_auth_token subscriptions is triggered on token generation", %{socket: socket, user: user} do
+      # Setup a socket and join the channel
+      ref = push_doc(socket, @user_auth_token_subscription, variables: %{
+        "userId" => "#{user.id}"
+      })
+      assert_reply ref, :ok, %{subscriptionId: subscription_id}
+
+      assert {:ok, _pid} = GraphqlApiAssignment.TokenPipeline.TokenProducer.start_link(name: :token_prod, interval: :timer.seconds(1))
+      assert {:ok, _pid} = GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer.start_link(name: :token_prod_con)
+      assert {:ok, _pid} = GraphqlApiAssignment.TokenPipeline.TokenConsumer.start_link(name: :token_con)
+
+      assert_push "subscription:data", data, :timer.seconds(3)
+
+      assert %{
+               subscriptionId: ^subscription_id,
+               result: %{
+                 data: %{
+                   "userAuthToken" => token
+                 }
+               }
+             } = data
+
+      assert is_binary(token)
     end
   end
 

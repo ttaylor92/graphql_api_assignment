@@ -3,39 +3,42 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenProducer do
   alias GraphqlApiAssignment.SchemasPG.AccountManagement
 
   @default_name __MODULE__
-  @interval :timer.hours(24)
+  @deault_interval :timer.hours(24)
   @batch_size 1000
 
   def start_link(opts \\ []) do
     opts = Keyword.put_new(opts, :name, @default_name)
-    initial_state = 0
+    interval = Keyword.get(opts, :interval, @deault_interval)
+    opts = Keyword.delete(opts, :interval)
+    initial_state = %{counter: 0, interval: interval}
+
     GenStage.start_link(__MODULE__, initial_state, opts)
   end
 
   def init(state) do
-    schedule_next_run()
+    schedule_next_run(state.interval)
     {:producer, state}
   end
 
   def handle_demand(demand, state) do
-    users = AccountManagement.get_user_ids(demand + state)
+    users = AccountManagement.get_user_ids(demand + (Map.get(state, :counter) || 0))
     last_id = List.last(users)
-    {:noreply, users, last_id}
+    {:noreply, users, Map.put(state, :counter, last_id)}
   end
 
-  def handle_cast({:new_user, user_id}, _state) do
+  def handle_cast({:new_user, user_id}, state) do
     # Immediately push new user to consumers
-    {:noreply, [user_id], user_id}
+    {:noreply, [user_id], Map.put(state, :counter, user_id)}
   end
 
-  def handle_cast({:dispatch, user_ids}, _state) do
-    {:noreply, user_ids, List.last(user_ids)}
+  def handle_cast({:dispatch, user_ids}, state) do
+    {:noreply, user_ids, Map.put(state, :counter, List.last(user_ids))}
   end
 
   def handle_info(:run_daily, state) do
     IO.puts("Starting daily user processing...")
-    process_all_users(0)  # Start fetching users from offset 0
-    schedule_next_run()
+    process_all_users(state.counter)
+    schedule_next_run(state.interval)
     {:noreply, [], state}
   end
 
@@ -54,7 +57,7 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenProducer do
     GenServer.cast(__MODULE__, {:new_user, user_id})
   end
 
-  defp schedule_next_run do
-    Process.send_after(__MODULE__, :run_daily, @interval)
+  defp schedule_next_run(interval) do
+    Process.send_after(__MODULE__, :run_daily, interval)
   end
 end
