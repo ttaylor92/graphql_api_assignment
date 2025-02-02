@@ -7,7 +7,15 @@ defmodule GraphqlApiAssignment.Application do
 
   @impl true
   def start(_type, _args) do
+    topologies = [
+      example: [
+        strategy: Cluster.Strategy.Epmd,
+        config: [hosts: [:"node_a@localhost", :"node_b@localhost"]],
+      ]
+    ]
+
     children = [
+      {Cluster.Supervisor, [topologies, [name: GraphqlApiAssignment.ClusterSupervisor]]},
       {Phoenix.PubSub, name: GraphqlApiAssignment.PubSub},
       {DNSCluster,
        query: Application.get_env(:graphql_api_assignment, :dns_cluster_query) || :ignore},

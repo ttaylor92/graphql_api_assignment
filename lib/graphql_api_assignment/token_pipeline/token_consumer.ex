@@ -22,8 +22,8 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenConsumer do
       # Publish message
       Absinthe.Subscription.publish(
         GraphqlApiAssignmentWeb.Endpoint,
-        %{user_id: user_id, token: token},
-        user_token_created: user_id
+        token,
+        user_auth_token: user_id
       )
     end
     {:noreply, [], state}

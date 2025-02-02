@@ -47,7 +47,7 @@ defmodule GraphqlApiAssignmentWeb.Resolvers.UserResolver do
     {:ok, topic: response.user_id}
   end
 
-  def get_user_auth_token(%{id: id}, _) do
+  def get_user_auth_token(%{id: id}, _, _) do
     {:ok, GraphqlApiAssignment.TokenCache.get(id)}
   end
 end

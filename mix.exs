@@ -51,7 +51,8 @@ defmodule GraphqlApiAssignment.MixProject do
       {:factory_ex, "~> 0.1.0", only: :test},
       {:faker, "~> 0.18", only: :test},
       {:dataloader, "~> 1.0.0"},
-      {:gen_stage, "~> 1.2.1"}
+      {:gen_stage, "~> 1.2.1"},
+      {:libcluster, "~> 2.1"}
     ]
   end
 

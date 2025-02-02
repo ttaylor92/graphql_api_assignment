@@ -21,8 +21,8 @@ defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscription do
     end
 
     @desc "Subscribe to User Token updates"
-    field :user_token_created, :token_response do
-      arg :user_id, non_null(:integer)
+    field :user_auth_token, :string do
+      arg :user_id, non_null(:string)
 
       config &UserResolver.user_token_created_subscription_config/2
     end
