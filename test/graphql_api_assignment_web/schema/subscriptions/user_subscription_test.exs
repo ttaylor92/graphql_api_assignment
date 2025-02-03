@@ -60,15 +60,18 @@ defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscriptionTest do
       ref = push_doc(socket, @user_creation_subscription)
       assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
-      ref = push_doc(socket, @create_user_query, variables: %{
-        "name" => "John Doe",
-        "email" => "john@example.com",
-        "preferences" => %{
-          "likesEmails" => true,
-          "likesFaxes" => false,
-          "likesPhoneCalls" => true
-        }
-      })
+      ref =
+        push_doc(socket, @create_user_query,
+          variables: %{
+            "name" => "John Doe",
+            "email" => "john@example.com",
+            "preferences" => %{
+              "likesEmails" => true,
+              "likesFaxes" => false,
+              "likesPhoneCalls" => true
+            }
+          }
+        )
 
       assert_reply ref, :ok, _reply
 
@@ -81,10 +84,10 @@ defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscriptionTest do
                    "createdUser" => %{
                      "email" => "john@example.com",
                      "preferences" => %{
-                        "likesEmails" => true,
-                        "likesFaxes" => false,
-                        "likesPhoneCalls" => true
-                      }
+                       "likesEmails" => true,
+                       "likesFaxes" => false,
+                       "likesPhoneCalls" => true
+                     }
                    }
                  }
                }
@@ -101,50 +104,78 @@ defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscriptionTest do
       }
     }
     """
-    test "updated_user_preferences subscriptions is triggered on preference update", %{socket: socket, user: user} do
+    test "updated_user_preferences subscriptions is triggered on preference update", %{
+      socket: socket,
+      user: user
+    } do
       # Setup a socket and join the channel
-      ref = push_doc(socket, @updated_user_preferences_subscription, variables: %{
-        "userId" => user.id
-      })
+      ref =
+        push_doc(socket, @updated_user_preferences_subscription,
+          variables: %{
+            "userId" => user.id
+          }
+        )
+
       assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
-      ref = push_doc(socket, @update_user_preferences_query, variables: %{
-        "userId" => user.id,
-        "likesEmails" => true,
-        "likesFaxes" => true,
-        "likesPhoneCalls" => true
-      })
+      ref =
+        push_doc(socket, @update_user_preferences_query,
+          variables: %{
+            "userId" => user.id,
+            "likesEmails" => true,
+            "likesFaxes" => true,
+            "likesPhoneCalls" => true
+          }
+        )
 
       assert_reply ref, :ok, _reply
 
       assert_push "subscription:data", data
 
       user_id = user.id
+
       assert %{
                subscriptionId: ^subscription_id,
                result: %{
                  data: %{
                    "updatedUserPreferences" => %{
-                      "likesEmails" => true,
-                      "likesFaxes" => true,
-                      "likesPhoneCalls" => true,
-                      "userId" => ^user_id
+                     "likesEmails" => true,
+                     "likesFaxes" => true,
+                     "likesPhoneCalls" => true,
+                     "userId" => ^user_id
                    }
                  }
                }
              } = data
     end
 
-    test "user_auth_token subscriptions is triggered on token generation", %{socket: socket, user: user} do
+    test "user_auth_token subscriptions is triggered on token generation", %{
+      socket: socket,
+      user: user
+    } do
       # Setup a socket and join the channel
-      ref = push_doc(socket, @user_auth_token_subscription, variables: %{
-        "userId" => "#{user.id}"
-      })
+      ref =
+        push_doc(socket, @user_auth_token_subscription,
+          variables: %{
+            "userId" => "#{user.id}"
+          }
+        )
+
       assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
-      assert {:ok, _pid} = GraphqlApiAssignment.TokenPipeline.TokenProducer.start_link(name: :token_prod, interval: :timer.seconds(1))
-      assert {:ok, _pid} = GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer.start_link(name: :token_prod_con)
-      assert {:ok, _pid} = GraphqlApiAssignment.TokenPipeline.TokenConsumer.start_link(name: :token_con)
+      assert {:ok, _pid} =
+               GraphqlApiAssignment.TokenPipeline.TokenProducer.start_link(
+                 name: :token_prod,
+                 interval: :timer.seconds(1)
+               )
+
+      assert {:ok, _pid} =
+               GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer.start_link(
+                 name: :token_prod_con
+               )
+
+      assert {:ok, _pid} =
+               GraphqlApiAssignment.TokenPipeline.TokenConsumer.start_link(name: :token_con)
 
       assert_push "subscription:data", data, :timer.seconds(3)
 
