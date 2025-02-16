@@ -23,9 +23,13 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer do
   end
 
   defp generate_token(user_id) do
-    16
-    |> :crypto.strong_rand_bytes()
-    |> Base.encode64()
-    |> Kernel.<>("#{user_id}")
+    :telemetry.span([:token_pipeline, :duration], %{metadata: :token_generation}, fn ->
+      result = 16
+        |> :crypto.strong_rand_bytes()
+        |> Base.encode64()
+        |> Kernel.<>("#{user_id}")
+
+      {result, %{}}
+    end)
   end
 end

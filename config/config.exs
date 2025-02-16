@@ -23,6 +23,13 @@ config :ecto_shorts,
 config :graphql_api_assignment,
   generators: [timestamp_type: :utc_datetime]
 
+config :prometheus_telemetry,
+  default_millisecond_buckets: [100, 300, 500, 1000, 2000, 5000, 10_000],
+  default_microsecond_buckets: [50_000, 100_000, 250_000, 500_000, 750_000],
+  measurement_poll_period: :timer.seconds(10),
+  ecto_max_query_length: 150,
+  ecto_known_query_module: nil
+
 # Configures the endpoint
 config :graphql_api_assignment, GraphqlApiAssignmentWeb.Endpoint,
   url: [host: "localhost"],
