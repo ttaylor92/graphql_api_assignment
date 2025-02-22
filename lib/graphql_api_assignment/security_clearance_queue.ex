@@ -50,6 +50,7 @@ defmodule GraphqlApiAssignment.SecurityClearanceQueue do
 
   # API
   def checkin_user(id, name \\ @default_name) do
+    IO.puts("New User #{id} has been checked in.")
     GenServer.cast(name, {:checkin_user, id})
   end
 

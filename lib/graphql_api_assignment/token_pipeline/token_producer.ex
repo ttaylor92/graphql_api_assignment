@@ -23,6 +23,11 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenProducer do
     {:noreply, user_ids, state}
   end
 
+  def handle_cast({:new_user, user_id}, state) do
+    # Immediately push new user to consumers
+    {:noreply, [user_id], state}
+  end
+
   def new_user_registered(user_id) do
     GenServer.cast(__MODULE__, {:new_user, user_id})
   end

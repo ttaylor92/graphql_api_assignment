@@ -164,6 +164,11 @@ defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscriptionTest do
       assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
       assert {:ok, _pid} =
+               GraphqlApiAssignment.SecurityClearanceQueue.start_link(name: :sec_queue)
+
+      assert {:ok, _pid} = GraphqlApiAssignment.ResourceScheduler.start_link(name: :res_schedule)
+
+      assert {:ok, _pid} =
                GraphqlApiAssignment.TokenPipeline.TokenProducer.start_link(
                  name: :token_prod,
                  interval: :timer.seconds(1)
