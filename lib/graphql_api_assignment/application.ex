@@ -29,9 +29,6 @@ defmodule GraphqlApiAssignment.Application do
       GraphqlApiAssignment.Repo,
       GraphqlApiAssignment.ResolverBucket,
       GraphqlApiAssignment.TokenCache,
-      {GraphqlApiAssignment.TokenPipeline.TokenProducer, []},
-      {GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer, []},
-      {GraphqlApiAssignment.TokenPipeline.TokenConsumer, []},
       {PrometheusTelemetry,
           exporter: [enabled?: true],
           metrics: [
@@ -39,7 +36,12 @@ defmodule GraphqlApiAssignment.Application do
             PrometheusTelemetry.Metrics.GraphQL.metrics(),
             GraphqlApiAssignment.Metrics.TokenPipeline.metrics()
           ]
-      }
+      },
+      GraphqlApiAssignment.SecurityClearanceQueue,
+      GraphqlApiAssignment.ResourceScheduler,
+      {GraphqlApiAssignment.TokenPipeline.TokenProducer, []},
+      {GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer, []},
+      {GraphqlApiAssignment.TokenPipeline.TokenConsumer, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

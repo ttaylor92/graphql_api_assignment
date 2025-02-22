@@ -40,7 +40,7 @@ defmodule GraphqlApiAssignment.SchemasPG.AccountManagement.User do
     queryable
   end
 
-  def get_user_ids(limit, offset) do
-    from(u in __MODULE__, select: u.id, limit: ^limit, offset: ^offset)
+  def get_user_ids(offset) do
+    from(u in __MODULE__, select: u.id, offset: ^offset)
   end
 end
