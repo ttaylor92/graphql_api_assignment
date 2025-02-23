@@ -5,7 +5,7 @@ defmodule GraphqlApiAssignment.ResourceScheduler do
   alias GraphqlApiAssignment.SecurityClearanceQueue
 
   @default_name __MODULE__
-  @deault_interval :timer.hours(24)
+  @deault_interval :timer.minutes(1)
 
   def start_link(opts \\ []) do
     opts = Keyword.put_new(opts, :name, @default_name)

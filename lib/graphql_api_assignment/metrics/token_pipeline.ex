@@ -4,7 +4,7 @@ defmodule GraphqlApiAssignment.Metrics.TokenPipeline do
 
   @event_prefix [:grapql_api]
   @distribution_event_name @event_prefix ++ [:token_generation]
-  @counter_event_name @event_prefix ++ [:total]
+  @counter_event_name @event_prefix ++ [:token_generation, :total]
   @buckets PrometheusTelemetry.Config.default_millisecond_buckets()
 
   def metrics do
@@ -14,12 +14,11 @@ defmodule GraphqlApiAssignment.Metrics.TokenPipeline do
         event_name: @distribution_event_name,
         measurement: :duration,
         description: "Time to generate auth tokens",
-        tags: [:metadata],
         reporter_options: [buckets: @buckets]
       ),
       counter(
-        "grapql_api.total.count",
-        # event_name: @counter_event_name,
+        "grapql_api.token_generationtotal.count",
+        event_name: @counter_event_name,
         description: "Total generated auth tokens"
       )
     ]
@@ -27,5 +26,9 @@ defmodule GraphqlApiAssignment.Metrics.TokenPipeline do
 
   def inc_total_count do
     :telemetry.execute(@counter_event_name, %{count: 1})
+  end
+
+  def inc_generate_session_token(duration) do
+    :telemetry.execute(@distribution_event_name, %{duration: duration})
   end
 end

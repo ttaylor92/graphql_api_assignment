@@ -32,7 +32,7 @@ defmodule GraphqlApiAssignment.Application do
       {PrometheusTelemetry,
           exporter: [enabled?: true],
           metrics: [
-            PrometheusTelemetry.Metrics.Ecto.metrics(:graphql_api_assignment),
+            PrometheusTelemetry.Metrics.Ecto.metrics_for_repo(GraphqlApiAssignment.Repo),
             PrometheusTelemetry.Metrics.GraphQL.metrics(),
             GraphqlApiAssignment.Metrics.TokenPipeline.metrics()
           ]
