@@ -12,7 +12,12 @@ defmodule GraphqlApiAssignment.TokenCache do
 
   @impl true
   def init(%{table_name: table_name}) do
-    :ets.new(table_name, [:named_table, read_concurrency: true])
+    case :ets.whereis(table_name) do
+      :undefined ->
+        :ets.new(table_name, [:named_table, read_concurrency: true])
+      _table_ref ->
+        :ok
+    end
     {:ok, %{table_name: table_name}}
   end
 

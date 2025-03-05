@@ -1,14 +1,6 @@
 defmodule GraphqlApiAssignment.Support.Datacase do
   use ExUnit.CaseTemplate
 
-  using do
-    quote do
-      import Ecto.Changeset
-      import Ecto.Query
-      import GraphqlApiAssignment.Repo
-    end
-  end
-
   setup tags do
     setup_sandbox(tags)
     :ok

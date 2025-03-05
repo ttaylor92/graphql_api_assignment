@@ -3,7 +3,7 @@ defmodule GraphqlApiAssignmentWeb.Support.SubscriptionCase do
   Test Case for GraphQL subscription
   """
 
-  use ExUnit.CaseTemplate
+  use ExUnit.CaseTemplate, async: true
 
   using do
     quote do
