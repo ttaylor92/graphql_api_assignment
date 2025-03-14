@@ -53,7 +53,10 @@ defmodule GraphqlApiAssignment.MixProject do
       {:dataloader, "~> 1.0.0"},
       {:gen_stage, "~> 1.2.1"},
       {:libcluster, "~> 3.3"},
-      {:prometheus_telemetry, "~> 0.4"}
+      {:prometheus_telemetry, "~> 0.4"},
+      {:redix, "~> 1.5.2"},
+      {:castore, "~> 1.0"},
+      {:poolboy, "~> 1.5.2"}
     ]
   end
 
