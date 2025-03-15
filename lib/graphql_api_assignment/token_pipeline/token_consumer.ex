@@ -10,14 +10,16 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenConsumer do
   end
 
   def init(state) do
-    {:consumer, state, subscribe_to: [TokenPipeline.TokenProducerConsumer]}
+    {:consumer, state,
+     subscribe_to: [{TokenPipeline.TokenProducerConsumer, min_demand: 0, max_demand: 10}]}
   end
 
   def handle_events(user_tokens, _from, state) do
+    IO.inspect("Consumer received #{length(user_tokens)} events")
+
     for {user_id, token} <- user_tokens do
       # Update Cache
       GraphqlApiAssignment.TokenCache.put(user_id, token)
-      IO.puts("Added token for user #{user_id}")
 
       # Publish message
       Absinthe.Subscription.publish(
@@ -26,6 +28,7 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenConsumer do
         user_auth_token: user_id
       )
     end
+
     {:noreply, [], state}
   end
 end

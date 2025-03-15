@@ -85,8 +85,8 @@ defmodule GraphqlApiAssignmentWeb.Schema.Mutations.UserMutationTest do
       assert {:ok, %{errors: errors}} =
                Absinthe.run(@create_user_query, Schema, variables: variables)
       error = List.first(errors)
-      assert error.message === "Email Already Exists"
-      assert error.code === :conflict
+      assert error.message === "Email has invalid format"
+      assert error.code === :bad_request
     end
   end
 

@@ -29,6 +29,16 @@ defmodule GraphqlApiAssignment.Application do
       GraphqlApiAssignment.Repo,
       GraphqlApiAssignment.ResolverBucket,
       GraphqlApiAssignment.TokenCache,
+      {PrometheusTelemetry,
+          exporter: [enabled?: true],
+          metrics: [
+            PrometheusTelemetry.Metrics.Ecto.metrics_for_repo(GraphqlApiAssignment.Repo),
+            PrometheusTelemetry.Metrics.GraphQL.metrics(),
+            GraphqlApiAssignment.Metrics.TokenPipeline.metrics()
+          ]
+      },
+      GraphqlApiAssignment.SecurityClearanceQueue,
+      GraphqlApiAssignment.ResourceScheduler,
       {GraphqlApiAssignment.TokenPipeline.TokenProducer, []},
       {GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer, []},
       {GraphqlApiAssignment.TokenPipeline.TokenConsumer, []}

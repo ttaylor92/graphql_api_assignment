@@ -1,6 +1,7 @@
 defmodule GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer do
   use GenStage
   alias GraphqlApiAssignment.TokenPipeline
+  alias GraphqlApiAssignment.Metrics
 
   @default_name __MODULE__
 
@@ -10,22 +11,33 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer do
   end
 
   def init(state) do
-    {:producer_consumer, state, subscribe_to: [TokenPipeline.TokenProducer]}
+    {:producer_consumer, state,
+     subscribe_to: [{TokenPipeline.TokenProducer, min_demand: 0, max_demand: 10}]}
   end
 
   def handle_events(users, _from, state) do
-    user_tokens = Enum.map(users, fn user_id ->
-      token = generate_token(user_id)
-      IO.puts("Generated token for user #{user_id}")
-      {user_id, token}
-    end)
+    user_tokens =
+      Enum.map(users, fn user_id ->
+        token = generate_token(user_id)
+        {user_id, token}
+      end)
+
     {:noreply, user_tokens, state}
   end
 
   defp generate_token(user_id) do
-    16
-    |> :crypto.strong_rand_bytes()
-    |> Base.encode64()
-    |> Kernel.<>("#{user_id}")
+    Metrics.TokenPipeline.inc_total_count()
+
+    {duration, res} =
+      :timer.tc(fn ->
+        16
+        |> :crypto.strong_rand_bytes()
+        |> Base.encode64()
+        |> Kernel.<>("#{user_id}")
+      end)
+
+    Metrics.TokenPipeline.inc_generate_session_token(duration)
+
+    res
   end
 end

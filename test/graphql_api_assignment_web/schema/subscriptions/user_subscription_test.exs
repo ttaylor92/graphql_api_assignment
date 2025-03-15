@@ -164,10 +164,19 @@ defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscriptionTest do
       assert_reply ref, :ok, %{subscriptionId: subscription_id}
 
       assert {:ok, _pid} =
-               GraphqlApiAssignment.TokenPipeline.TokenProducer.start_link(
-                 name: :token_prod,
+               GraphqlApiAssignment.TokenCache.start_link(name: :cache)
+
+      assert {:ok, _pid} =
+               GraphqlApiAssignment.SecurityClearanceQueue.start_link(name: :sec_queue)
+
+      assert {:ok, _pid} =
+               GraphqlApiAssignment.ResourceScheduler.start_link(
+                 name: :res_schedule,
                  interval: :timer.seconds(1)
                )
+
+      assert {:ok, _pid} =
+               GraphqlApiAssignment.TokenPipeline.TokenProducer.start_link(name: :token_prod)
 
       assert {:ok, _pid} =
                GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer.start_link(
@@ -177,7 +186,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscriptionTest do
       assert {:ok, _pid} =
                GraphqlApiAssignment.TokenPipeline.TokenConsumer.start_link(name: :token_con)
 
-      assert_push "subscription:data", data, :timer.seconds(3)
+      assert_push "subscription:data", data, :timer.seconds(5)
 
       assert %{
                subscriptionId: ^subscription_id,

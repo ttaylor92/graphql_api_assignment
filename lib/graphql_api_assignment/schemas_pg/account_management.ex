@@ -39,8 +39,8 @@ defmodule GraphqlApiAssignment.SchemasPG.AccountManagement do
     Actions.update(Preference, id, params)
   end
 
-  def get_user_ids(limit \\ 3, offset \\ 0) when is_integer(limit) do
-    Actions.all(User.get_user_ids(limit, offset))
+  def get_user_ids(offset \\ 0) do
+    Actions.all(User.get_user_ids(offset))
   end
 
   def get_users(params \\ %{}) do
