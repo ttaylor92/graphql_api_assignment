@@ -9,8 +9,7 @@ defmodule GraphqlApiAssignment.ResourceScheduler do
 
   def start_link(opts \\ []) do
     opts = Keyword.put_new(opts, :name, @default_name)
-    interval = Keyword.get(opts, :interval, @deault_interval)
-    opts = Keyword.delete(opts, :interval)
+    {interval, opts} = Keyword.pop(opts, :interval, @deault_interval)
     GenServer.start(__MODULE__, %{interval: interval}, opts)
   end
 

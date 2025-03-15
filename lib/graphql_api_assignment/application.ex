@@ -39,9 +39,7 @@ defmodule GraphqlApiAssignment.Application do
       },
       GraphqlApiAssignment.SecurityClearanceQueue,
       GraphqlApiAssignment.ResourceScheduler,
-      {GraphqlApiAssignment.TokenPipeline.TokenProducer, []},
-      {GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer, []},
-      {GraphqlApiAssignment.TokenPipeline.TokenConsumer, []}
+      GraphqlApiAssignment.TokenPipelineSupervisor
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
