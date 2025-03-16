@@ -3,9 +3,11 @@ defmodule GraphqlApiAssignment.RedixPool do
   @default_size 10
   @default_overflow 10
 
-  def child_spec(opts) do
-    :poolboy.child_spec(@default_name,
-      name: {:local, @default_name},
+  def child_spec(opts \\ []) do
+    name = Keyword.get(opts, :name, @default_name)
+
+    :poolboy.child_spec(name,
+      name: {:local, name},
       worker_module: Redix,
       size: opts[:pool_size] || @default_size,
       max_overflow: opts[:max_overflow] || @default_overflow

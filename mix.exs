@@ -56,7 +56,8 @@ defmodule GraphqlApiAssignment.MixProject do
       {:prometheus_telemetry, "~> 0.4"},
       {:redix, "~> 1.5.2"},
       {:castore, "~> 1.0"},
-      {:poolboy, "~> 1.5.2"}
+      {:poolboy, "~> 1.5.2"},
+      {:request_cache_plug, "~> 1.0"}
     ]
   end
 

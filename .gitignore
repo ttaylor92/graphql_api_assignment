@@ -27,3 +27,5 @@ graphql_api_assignment-*.tar
 
 .cursor/
 
+.elixir_ls
+
