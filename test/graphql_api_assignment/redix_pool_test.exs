@@ -29,7 +29,7 @@ defmodule GraphqlApiAssignment.RedixPoolTest do
 
   describe "TTL functionality" do
     test "value expires after TTL" do
-      assert :ok = RedixPool.put("ttl_key", "will_expire", 1)
+      assert :ok = RedixPool.put("ttl_key", 1, "will_expire")
       assert {:ok, "will_expire"} = RedixPool.get("ttl_key")
 
       # Wait for expiration

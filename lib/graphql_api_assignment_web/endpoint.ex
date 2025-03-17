@@ -40,6 +40,9 @@ defmodule GraphqlApiAssignmentWeb.Endpoint do
   plug Plug.RequestId
   plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
+  # Request Cache
+  plug RequestCache.Plug
+
   plug Plug.Parsers,
     parsers: [:urlencoded, :multipart, :json],
     pass: ["*/*"],
@@ -49,4 +52,7 @@ defmodule GraphqlApiAssignmentWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug GraphqlApiAssignmentWeb.Router
+
+  plug Absinthe.Plug, before_send: {RequestCache, :connect_absinthe_context_to_conn}
+
 end

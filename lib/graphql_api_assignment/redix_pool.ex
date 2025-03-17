@@ -14,7 +14,7 @@ defmodule GraphqlApiAssignment.RedixPool do
     )
   end
 
-  def put(key, value, ttl \\ nil, name \\ @default_name)
+  def put(key, ttl \\ nil, value, name \\ @default_name)
 
   @doc """
   Stores a value in the Redis database with an optional time-to-live (TTL).
@@ -22,21 +22,21 @@ defmodule GraphqlApiAssignment.RedixPool do
   ## Parameters
 
     - `key`: The key under which the value will be stored (binary).
-    - `value`: The value to be stored (term).
     - `ttl`: The time-to-live for the key in seconds (integer). If not provided, the key will not expire.
+    - `value`: The value to be stored (term).
     - `name`: The name of the pool to use (atom). Defaults to `:redix_pool`.
 
   ## Examples
 
-      iex> GraphqlApiAssignment.RedixPool.put("my_key", "my_value")
+      iex> GraphqlApiAssignment.RedixPool.put("my_key", nil, "my_value")
       :ok
 
-      iex> GraphqlApiAssignment.RedixPool.put("my_key", "my_value", 3600)
+      iex> GraphqlApiAssignment.RedixPool.put("my_key", 3600, "my_value")
       :ok
 
   """
-  @spec put(binary(), term(), nil | integer(), term()) :: :ok
-  def put(key, value, nil, name) do
+  @spec put(binary(), nil | integer(), term(), term()) :: :ok
+  def put(key, nil, value, name) do
     :poolboy.transaction(name, fn pid ->
       with {:ok, "OK"} <- Redix.command(pid, ["SET", key, :erlang.term_to_binary(value)]) do
         :ok
@@ -44,8 +44,8 @@ defmodule GraphqlApiAssignment.RedixPool do
     end)
   end
 
-  @spec put(key :: binary(), key :: term(), ttl:: integer(), pool_name :: term()) :: :ok
-  def put(key, value, ttl, name) do
+  @spec put(key :: binary(), ttl:: integer(), value :: term(), pool_name :: term()) :: :ok
+  def put(key, ttl, value, name) do
     :poolboy.transaction(name, fn pid ->
       with {:ok, "OK"} <- Redix.command(pid, ["SETEX", key, ttl, :erlang.term_to_binary(value)]) do
         :ok

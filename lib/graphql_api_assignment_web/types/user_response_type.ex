@@ -9,6 +9,8 @@ defmodule GraphqlApiAssignmentWeb.Types.UserResponseType do
     field :preferences, :preference_response
 
     field :auth_token, :string do
+      middleware RequestCache.Middleware, ttl: :timer.seconds(60)
+
       resolve &UserResolver.get_user_auth_token/3
     end
   end
