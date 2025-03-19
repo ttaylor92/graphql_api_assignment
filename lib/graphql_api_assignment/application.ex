@@ -10,7 +10,11 @@ defmodule GraphqlApiAssignment.Application do
     topologies = [
       example: [
         strategy: Cluster.Strategy.Epmd,
-        config: [hosts: [:"node_a@localhost", :"node_b@localhost"]],
+        config: [hosts: [
+          :node_a@localhost,
+          :node_b@localhost,
+          :node_c@localhost
+        ]]
       ]
     ]
 
@@ -30,17 +34,25 @@ defmodule GraphqlApiAssignment.Application do
       GraphqlApiAssignment.ResolverBucket,
       GraphqlApiAssignment.TokenCache,
       {PrometheusTelemetry,
-          exporter: [enabled?: true],
-          metrics: [
-            PrometheusTelemetry.Metrics.Ecto.metrics_for_repo(GraphqlApiAssignment.Repo),
-            PrometheusTelemetry.Metrics.GraphQL.metrics(),
-            GraphqlApiAssignment.Metrics.TokenPipeline.metrics()
-          ]
-      },
+       exporter: [enabled?: true],
+       metrics: [
+         PrometheusTelemetry.Metrics.Ecto.metrics_for_repo(GraphqlApiAssignment.Repo),
+         PrometheusTelemetry.Metrics.GraphQL.metrics(),
+         GraphqlApiAssignment.Metrics.TokenPipeline.metrics()
+       ]},
       GraphqlApiAssignment.SecurityClearanceQueue,
       GraphqlApiAssignment.ResourceScheduler,
       GraphqlApiAssignment.TokenPipelineSupervisor,
-      GraphqlApiAssignment.RedixPool.child_spec()
+      GraphqlApiAssignment.RedixPool.child_spec(),
+      %{
+        id: :hashring_cache,
+        start: {HashRing.Managed, :new, [
+            GraphqlApiAssignment.HashringCache.hash_ring_name(),
+            [monitor_nodes: true, node_type: :visible]
+          ]
+        }
+      },
+      GraphqlApiAssignment.HashringCache
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

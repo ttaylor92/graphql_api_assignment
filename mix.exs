@@ -57,7 +57,8 @@ defmodule GraphqlApiAssignment.MixProject do
       {:redix, "~> 1.5.2"},
       {:castore, "~> 1.0"},
       {:poolboy, "~> 1.5.2"},
-      {:request_cache_plug, "~> 1.0"}
+      {:request_cache_plug, "~> 1.0"},
+      {:libring, "~> 1.0"}
     ]
   end
 

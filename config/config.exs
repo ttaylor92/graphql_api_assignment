@@ -36,6 +36,12 @@ config :request_cache_plug,
   graphql_paths: ["/graphiql", "/graphql"],
   request_cache_module: GraphqlApiAssignment.RedixPool
 
+config :libring,
+  rings: [
+    ring_a: [monitor_nodes: true, node_type: :visible],
+    ring_b: [monitor_nodes: true, node_type: :visible]
+  ]
+
 # Configures the endpoint
 config :graphql_api_assignment, GraphqlApiAssignmentWeb.Endpoint,
   url: [host: "localhost"],
