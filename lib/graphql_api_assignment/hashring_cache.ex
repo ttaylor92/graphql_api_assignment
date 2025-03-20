@@ -32,9 +32,8 @@ defmodule GraphqlApiAssignment.HashringCache do
   end
 
   def get(hash_ring \\ @hash_ring_name, key) do
-    key
-    |> key_to_node(hash_ring)
-    |> IO.inspect()
+    hash_ring
+    |> key_to_node(key)
     |> Enum.random()
     |> :erpc.call(fn ->
       res =
