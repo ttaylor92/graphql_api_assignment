@@ -10,10 +10,10 @@ defmodule GraphqlApiAssignment.Application do
     topologies = [
       example: [
         strategy: Cluster.Strategy.Epmd,
-        config: [hosts: [
+        config: [
+          hosts: [
           :node1@localhost,
-          :node2@localhost,
-          :node3@localhost
+          :node2@localhost
         ]]
       ]
     ]
@@ -34,7 +34,7 @@ defmodule GraphqlApiAssignment.Application do
       GraphqlApiAssignment.ResolverBucket,
       GraphqlApiAssignment.TokenCache,
       {PrometheusTelemetry,
-       exporter: [enabled?: true, opts: [port: get_port()]],
+       exporter: [enabled?: true, opts: [port: get_port("PROMETHEUS_PORT")]],
        metrics: [
          PrometheusTelemetry.Metrics.Ecto.metrics_for_repo(GraphqlApiAssignment.Repo),
          PrometheusTelemetry.Metrics.GraphQL.metrics(),
@@ -61,8 +61,8 @@ defmodule GraphqlApiAssignment.Application do
     Supervisor.start_link(children, opts)
   end
 
-  defp get_port() do
-    String.to_integer(System.get_env("PORT", "5000"))
+  defp get_port(k) do
+    String.to_integer(System.get_env(k, "5000"))
   end
 
   # Tell Phoenix to update the endpoint configuration

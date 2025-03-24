@@ -29,3 +29,5 @@ graphql_api_assignment-*.tar
 
 .elixir_ls
 
+.env*
+

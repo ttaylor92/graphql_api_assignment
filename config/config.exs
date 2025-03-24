@@ -38,8 +38,8 @@ config :request_cache_plug,
 
 config :libring,
   rings: [
-    ring_a: [monitor_nodes: true, node_type: :visible],
-    ring_b: [monitor_nodes: true, node_type: :visible]
+    ring_a: [monitor_nodes: true],
+    ring_b: [monitor_nodes: true]
   ]
 
 # Configures the endpoint
