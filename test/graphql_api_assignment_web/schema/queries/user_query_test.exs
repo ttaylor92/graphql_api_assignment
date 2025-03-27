@@ -4,6 +4,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
   import Support.HelperFunctions, only: [setup_mock_accounts: 1]
 
   alias GraphqlApiAssignmentWeb.Schema
+
   alias GraphqlApiAssignment.Support.Factory.SchemasPG.AccountManagement.{
     PreferenceFactory,
     UserFactory
@@ -40,6 +41,36 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
       assert user["preferences"]["likesFaxes"] === context.preference.likes_faxes
       assert user["preferences"]["likesPhoneCalls"] === context.preference.likes_phone_calls
       assert user["preferences"]["userId"] === context.preference.user_id
+    end
+
+    test "fetches a user by ID, is faster on second request due to cache", %{user: %{id: user_id}} do
+      variables = %{"id" => user_id}
+
+      assert {first_call_duration, result} =
+               :timer.tc(fn -> Absinthe.run(@query_user, Schema, variables: variables) end)
+
+      assert {:ok,
+              %{
+                data: %{
+                  "user" => %{
+                    "id" => ^user_id
+                  }
+                }
+              }} = result
+
+      assert {second_call_duration, result} =
+               :timer.tc(fn -> Absinthe.run(@query_user, Schema, variables: variables) end)
+
+      assert {:ok,
+              %{
+                data: %{
+                  "user" => %{
+                    "id" => ^user_id
+                  }
+                }
+              }} = result
+
+      assert first_call_duration > second_call_duration
     end
 
     test "returns an error when ID does not exist" do
@@ -79,6 +110,42 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.UserQuerTest do
 
       assert Enum.empty?(users) === false
       assert Enum.any?(users, fn user -> user["id"] === context.user.id end)
+    end
+
+    test "fetches users with no arguments, is faster on second request due to cache", %{
+      user: %{id: user_id}
+    } do
+      variables = %{}
+
+      assert {first_call_duration, result} =
+               :timer.tc(fn -> Absinthe.run(@query_users, Schema, variables: variables) end)
+
+      assert {:ok,
+              %{
+                data: %{
+                  "users" => [
+                    %{
+                      "id" => ^user_id
+                    }
+                  ]
+                }
+              }} = result
+
+      assert {second_call_duration, result} =
+               :timer.tc(fn -> Absinthe.run(@query_users, Schema, variables: variables) end)
+
+      assert {:ok,
+              %{
+                data: %{
+                  "users" => [
+                    %{
+                      "id" => ^user_id
+                    }
+                  ]
+                }
+              }} = result
+
+      assert first_call_duration > second_call_duration
     end
 
     test "fetches users with preferences", context do

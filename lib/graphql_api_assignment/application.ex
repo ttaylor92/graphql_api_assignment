@@ -12,9 +12,10 @@ defmodule GraphqlApiAssignment.Application do
         strategy: Cluster.Strategy.Epmd,
         config: [
           hosts: [
-          :node1@localhost,
-          :node2@localhost
-        ]]
+            :node1@localhost,
+            :node2@localhost
+          ]
+        ]
       ]
     ]
 
@@ -31,7 +32,6 @@ defmodule GraphqlApiAssignment.Application do
       GraphqlApiAssignmentWeb.Endpoint,
       {Absinthe.Subscription, GraphqlApiAssignmentWeb.Endpoint},
       GraphqlApiAssignment.Repo,
-      GraphqlApiAssignment.ResolverBucket,
       GraphqlApiAssignment.TokenCache,
       {PrometheusTelemetry,
        exporter: [enabled?: true, opts: [port: get_port("PROMETHEUS_PORT")]],
@@ -45,14 +45,15 @@ defmodule GraphqlApiAssignment.Application do
       GraphqlApiAssignment.TokenPipelineSupervisor,
       GraphqlApiAssignment.RedixPool.child_spec(),
       %{
-        id: :hashring_cache,
-        start: {HashRing.Managed, :new, [
-            GraphqlApiAssignment.HashringCache.hash_ring_name(),
-            [monitor_nodes: true, node_type: :visible]
-          ]
-        }
+        id: :hashring_counter,
+        start:
+          {HashRing.Managed, :new,
+           [
+             GraphqlApiAssignment.HashringCounter.hash_ring_name(),
+             [monitor_nodes: true, node_type: :visible]
+           ]}
       },
-      GraphqlApiAssignment.HashringCache
+      GraphqlApiAssignment.HashringCounter
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

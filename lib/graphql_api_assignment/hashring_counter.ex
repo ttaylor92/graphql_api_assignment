@@ -1,7 +1,7 @@
-defmodule GraphqlApiAssignment.HashringCache do
+defmodule GraphqlApiAssignment.HashringCounter do
   use Task, restart: :permanent
 
-  @hash_ring_name :default_hash_cache
+  @hash_ring_name :default_hash_counter
   @ets_options [:public, :set, :named_table]
   @replica_count 2
 
@@ -15,18 +15,18 @@ defmodule GraphqlApiAssignment.HashringCache do
     end)
   end
 
-  def setup(opts) do
+  defp setup(opts) do
     :ets.new(table_name(opts[:name]), @ets_options)
     Process.hibernate(Function, :identity, [])
   end
 
-  def put(hash_ring \\ @hash_ring_name, key, value) do
+  def put(hash_ring \\ @hash_ring_name, key, _value \\ nil) do
     hash_ring
     |> key_to_node(key)
     |> Enum.each(&:erpc.cast(&1, fn ->
         hash_ring
         |> table_name()
-        |> :ets.insert({key, value})
+        |> :ets.update_counter(key, {2, 1}, {key, 0})
       end)
     )
   end
@@ -43,7 +43,7 @@ defmodule GraphqlApiAssignment.HashringCache do
 
       case res do
         [{_, value}] -> value
-        _ -> nil
+        _ -> 0
       end
     end)
   end
@@ -53,4 +53,10 @@ defmodule GraphqlApiAssignment.HashringCache do
   end
 
   def table_name(hash_ring), do: :"#{hash_ring}_ets"
+
+  @spec get_key_count(key :: atom()) :: integer()
+  def get_key_count(key), do: get(hash_ring_name(), key)
+
+  @spec increment_key(key :: atom()) :: :ok
+  def increment_key(key), do: put(hash_ring_name(), key)
 end
