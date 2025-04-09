@@ -11,7 +11,10 @@ config :graphql_api_assignment, GraphqlApiAssignment.Repo,
   database: "graphql_api_assignment_repo",
   username: "user",
   password: "password",
-  hostname: "localhost"
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  log: :debug,
+  stacktrace: true
 
 config :graphql_api_assignment,
   ecto_repos: [GraphqlApiAssignment.Repo]

@@ -25,7 +25,7 @@ defmodule GraphqlApiAssignment.TokenCache do
   def handle_call({:get, user_id}, _from, state) do
     case :ets.lookup(state.table_name, user_id) do
       [{^user_id, token}] -> {:reply, token, state}
-      [] -> {:reply, nil, state}
+      [] -> {:reply, "Token creation is processing. Token will be distributed once processing is done.", state}
     end
   end
 

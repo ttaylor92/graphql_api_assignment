@@ -28,6 +28,7 @@ defmodule GraphqlApiAssignment.Application do
       {Finch, name: GraphqlApiAssignment.Finch},
       # Start a worker by calling: GraphqlApiAssignment.Worker.start_link(arg)
       # {GraphqlApiAssignment.Worker, arg},
+      GraphqlApiAssignment.RedixPool.child_spec(),
       # Start to serve requests, typically the last entry
       GraphqlApiAssignmentWeb.Endpoint,
       {Absinthe.Subscription, GraphqlApiAssignmentWeb.Endpoint},
@@ -38,12 +39,12 @@ defmodule GraphqlApiAssignment.Application do
        metrics: [
          PrometheusTelemetry.Metrics.Ecto.metrics_for_repo(GraphqlApiAssignment.Repo),
          PrometheusTelemetry.Metrics.GraphQL.metrics(),
-         GraphqlApiAssignment.Metrics.TokenPipeline.metrics()
+         GraphqlApiAssignment.Metrics.TokenPipeline.metrics(),
+         GraphqlApiAssignment.Metrics.HashringCounter.metrics()
        ]},
       GraphqlApiAssignment.SecurityClearanceQueue,
       GraphqlApiAssignment.ResourceScheduler,
       GraphqlApiAssignment.TokenPipelineSupervisor,
-      GraphqlApiAssignment.RedixPool.child_spec(),
       %{
         id: :hashring_counter,
         start:

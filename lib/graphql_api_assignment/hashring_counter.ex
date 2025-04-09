@@ -1,4 +1,9 @@
 defmodule GraphqlApiAssignment.HashringCounter do
+  @doc """
+  I opted for the Hasring as I prefered avalaibility and partition tolerance
+  over consistency (eventual consistency is fine for my use case). I wanted to
+  avoid system downtime or refusal to serve requests.
+  """
   use Task, restart: :permanent
 
   @hash_ring_name :default_hash_counter
@@ -21,31 +26,44 @@ defmodule GraphqlApiAssignment.HashringCounter do
   end
 
   def put(hash_ring \\ @hash_ring_name, key, _value \\ nil) do
-    hash_ring
-    |> key_to_node(key)
-    |> Enum.each(&:erpc.cast(&1, fn ->
+    {duration, res} =
+      :timer.tc(fn ->
         hash_ring
-        |> table_name()
-        |> :ets.update_counter(key, {2, 1}, {key, 0})
+        |> key_to_node(key)
+        |> Enum.each(
+          &:erpc.cast(&1, fn ->
+            hash_ring
+            |> table_name()
+            |> :ets.update_counter(key, {2, 1}, {key, 0})
+          end)
+        )
       end)
-    )
+
+    GraphqlApiAssignment.Metrics.HashringCounter.inc_hash_ring_put_duration(duration)
+    res
   end
 
   def get(hash_ring \\ @hash_ring_name, key) do
-    hash_ring
-    |> key_to_node(key)
-    |> Enum.random()
-    |> :erpc.call(fn ->
-      res =
+    {duration, res} =
+      :timer.tc(fn ->
         hash_ring
-        |> table_name()
-        |> :ets.lookup(key)
+        |> key_to_node(key)
+        |> Enum.random()
+        |> :erpc.call(fn ->
+          res =
+            hash_ring
+            |> table_name()
+            |> :ets.lookup(key)
 
-      case res do
-        [{_, value}] -> value
-        _ -> 0
-      end
-    end)
+          case res do
+            [{_, value}] -> value
+            _ -> 0
+          end
+        end)
+      end)
+
+    GraphqlApiAssignment.Metrics.HashringCounter.inc_hash_ring_get_duration(duration)
+    res
   end
 
   def key_to_node(hash_ring \\ @hash_ring_name, key) do

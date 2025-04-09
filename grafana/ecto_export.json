@@ -18,13 +18,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 6,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cedvl3fku3chsc"
+        "uid": "eeifd9qqffev4c"
       },
       "fieldConfig": {
         "defaults": {
@@ -69,8 +69,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -126,7 +125,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.6.0",
       "targets": [
         {
           "datasource": {
@@ -147,7 +146,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cedvl3fku3chsc"
+        "uid": "eeifd9qqffev4c"
       },
       "fieldConfig": {
         "defaults": {
@@ -192,8 +191,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -249,7 +247,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.6.0",
       "targets": [
         {
           "datasource": {
@@ -270,7 +268,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cedvl3fku3chsc"
+        "uid": "eeifd9qqffev4c"
       },
       "fieldConfig": {
         "defaults": {
@@ -282,8 +280,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -332,7 +329,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.6.0",
       "targets": [
         {
           "datasource": {
@@ -353,7 +350,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "cedvl3fku3chsc"
+        "uid": "eeifd9qqffev4c"
       },
       "fieldConfig": {
         "defaults": {
@@ -365,8 +362,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -415,7 +411,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.5.1",
+      "pluginVersion": "11.6.0",
       "targets": [
         {
           "datasource": {
@@ -436,7 +432,7 @@
   ],
   "preload": false,
   "refresh": "",
-  "schemaVersion": 40,
+  "schemaVersion": 41,
   "tags": [],
   "templating": {
     "list": []
@@ -449,6 +445,5 @@
   "timezone": "browser",
   "title": "Ecto",
   "uid": "fedy9ix6qgo3kc",
-  "version": 1,
-  "weekStart": ""
+  "version": 2
 }
