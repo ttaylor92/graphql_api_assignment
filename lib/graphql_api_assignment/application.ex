@@ -10,7 +10,12 @@ defmodule GraphqlApiAssignment.Application do
     topologies = [
       example: [
         strategy: Cluster.Strategy.Epmd,
-        config: [hosts: [:"node_a@localhost", :"node_b@localhost"]],
+        config: [
+          hosts: [
+            :node1@localhost,
+            :node2@localhost
+          ]
+        ]
       ]
     ]
 
@@ -23,31 +28,43 @@ defmodule GraphqlApiAssignment.Application do
       {Finch, name: GraphqlApiAssignment.Finch},
       # Start a worker by calling: GraphqlApiAssignment.Worker.start_link(arg)
       # {GraphqlApiAssignment.Worker, arg},
+      GraphqlApiAssignment.RedixPool.child_spec(),
       # Start to serve requests, typically the last entry
       GraphqlApiAssignmentWeb.Endpoint,
       {Absinthe.Subscription, GraphqlApiAssignmentWeb.Endpoint},
       GraphqlApiAssignment.Repo,
-      GraphqlApiAssignment.ResolverBucket,
       GraphqlApiAssignment.TokenCache,
       {PrometheusTelemetry,
-          exporter: [enabled?: true],
-          metrics: [
-            PrometheusTelemetry.Metrics.Ecto.metrics_for_repo(GraphqlApiAssignment.Repo),
-            PrometheusTelemetry.Metrics.GraphQL.metrics(),
-            GraphqlApiAssignment.Metrics.TokenPipeline.metrics()
-          ]
-      },
+       exporter: [enabled?: true, opts: [port: get_port("PROMETHEUS_PORT")]],
+       metrics: [
+         PrometheusTelemetry.Metrics.Ecto.metrics_for_repo(GraphqlApiAssignment.Repo),
+         PrometheusTelemetry.Metrics.GraphQL.metrics(),
+         GraphqlApiAssignment.Metrics.TokenPipeline.metrics(),
+         GraphqlApiAssignment.Metrics.HashringCounter.metrics()
+       ]},
       GraphqlApiAssignment.SecurityClearanceQueue,
       GraphqlApiAssignment.ResourceScheduler,
-      {GraphqlApiAssignment.TokenPipeline.TokenProducer, []},
-      {GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer, []},
-      {GraphqlApiAssignment.TokenPipeline.TokenConsumer, []}
+      GraphqlApiAssignment.TokenPipelineSupervisor,
+      %{
+        id: :hashring_counter,
+        start:
+          {HashRing.Managed, :new,
+           [
+             GraphqlApiAssignment.HashringCounter.hash_ring_name(),
+             [monitor_nodes: true, node_type: :visible]
+           ]}
+      },
+      GraphqlApiAssignment.HashringCounter
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: GraphqlApiAssignment.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  defp get_port(k) do
+    String.to_integer(System.get_env(k, "5000"))
   end
 
   # Tell Phoenix to update the endpoint configuration

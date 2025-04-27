@@ -1,29 +1,29 @@
 defmodule GraphqlApiAssignmentWeb.Resolvers.UserResolver do
   alias GraphqlApiAssignment.UserService
-  alias GraphqlApiAssignment.ResolverBucket
+  alias GraphqlApiAssignment.HashringCounter
 
   def get_user_by_id(_, %{id: id}, _) do
-    ResolverBucket.increment_key(:get_user)
+    HashringCounter.increment_key(:get_user)
     UserService.get_user_by_id(id)
   end
 
   def create_user(_, args, _) do
-    ResolverBucket.increment_key(:create_user)
+    HashringCounter.increment_key(:create_user)
     UserService.create_user(args)
   end
 
   def get_users_by_preferences(_, args, _) do
-    ResolverBucket.increment_key(:get_users)
+    HashringCounter.increment_key(:get_users)
     UserService.get_users(args)
   end
 
   def update_a_user(_, args, _) do
-    ResolverBucket.increment_key(:update_user)
+    HashringCounter.increment_key(:update_user)
     UserService.update_a_user(args)
   end
 
   def update_user_preference(_, args, _) do
-    ResolverBucket.increment_key(:update_user_preferences)
+    HashringCounter.increment_key(:update_user_preferences)
     UserService.update_user_preference(args)
   end
 

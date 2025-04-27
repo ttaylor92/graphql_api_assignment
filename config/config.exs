@@ -11,7 +11,10 @@ config :graphql_api_assignment, GraphqlApiAssignment.Repo,
   database: "graphql_api_assignment_repo",
   username: "user",
   password: "password",
-  hostname: "localhost"
+  hostname: "localhost",
+  show_sensitive_data_on_connection_error: true,
+  log: :debug,
+  stacktrace: true
 
 config :graphql_api_assignment,
   ecto_repos: [GraphqlApiAssignment.Repo]
@@ -29,6 +32,18 @@ config :prometheus_telemetry,
   measurement_poll_period: :timer.seconds(10),
   ecto_max_query_length: 150,
   ecto_known_query_module: nil
+
+config :request_cache_plug,
+  enabled?: true,
+  verbose?: false,
+  graphql_paths: ["/graphiql", "/graphql"],
+  request_cache_module: GraphqlApiAssignment.RedixPool
+
+config :libring,
+  rings: [
+    ring_a: [monitor_nodes: true],
+    ring_b: [monitor_nodes: true]
+  ]
 
 # Configures the endpoint
 config :graphql_api_assignment, GraphqlApiAssignmentWeb.Endpoint,

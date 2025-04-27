@@ -176,15 +176,10 @@ defmodule GraphqlApiAssignmentWeb.Schema.Subscriptions.UserSubscriptionTest do
                )
 
       assert {:ok, _pid} =
-               GraphqlApiAssignment.TokenPipeline.TokenProducer.start_link(name: :token_prod)
-
-      assert {:ok, _pid} =
-               GraphqlApiAssignment.TokenPipeline.TokenProducerConsumer.start_link(
-                 name: :token_prod_con
+               GraphqlApiAssignment.TokenPipelineSupervisor.start_link(
+                 name: :token_test,
+                 prefix: :test
                )
-
-      assert {:ok, _pid} =
-               GraphqlApiAssignment.TokenPipeline.TokenConsumer.start_link(name: :token_con)
 
       assert_push "subscription:data", data, :timer.seconds(5)
 

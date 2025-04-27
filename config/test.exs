@@ -12,7 +12,11 @@ config :graphql_api_assignment, GraphqlApiAssignment.Repo,
   username: "user",
   password: "password",
   hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool: Ecto.Adapters.SQL.Sandbox,
+  show_sensitive_data_on_connection_error: true,
+  log: :debug,
+  stacktrace: true,
+  pool_size: 10
 
 # In test we don't send emails
 config :graphql_api_assignment, GraphqlApiAssignment.Mailer, adapter: Swoosh.Adapters.Test

@@ -6,12 +6,13 @@ defmodule GraphqlApiAssignment.TokenPipeline.TokenConsumer do
 
   def start_link(opts \\ []) do
     opts = Keyword.put_new(opts, :name, @default_name)
-    GenStage.start_link(__MODULE__, [], opts)
+    {subscribe_to, opts} = Keyword.pop(opts, :subscribe_to, TokenPipeline.TokenProducer)
+    GenStage.start_link(__MODULE__, [subscribe_to: subscribe_to], opts)
   end
 
   def init(state) do
     {:consumer, state,
-     subscribe_to: [{TokenPipeline.TokenProducerConsumer, min_demand: 0, max_demand: 10}]}
+     subscribe_to: [{Keyword.get(state, :subscribe_to), min_demand: 0, max_demand: 10}]}
   end
 
   def handle_events(user_tokens, _from, state) do

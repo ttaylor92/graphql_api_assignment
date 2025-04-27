@@ -1,7 +1,7 @@
 defmodule GraphqlApiAssignmentWeb.Schema.Queries.BucketQueryTest do
   use GraphqlApiAssignment.Support.Datacase
 
-  alias GraphqlApiAssignment.ResolverBucket
+  alias GraphqlApiAssignment.HashringCounter
   alias GraphqlApiAssignmentWeb.Schema
 
   @resolver_hits_query """
@@ -19,7 +19,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.BucketQueryTest do
         Absinthe.run(@resolver_hits_query, Schema, variables: variables)
 
       # Simulate fetching a user
-      ResolverBucket.increment_key(:get_user)
+      HashringCounter.increment_key(:get_user)
 
       new_amount = starting_amount + 1
       assert {:ok, %{data: %{"resolverHits" => ^new_amount}}} =
@@ -33,7 +33,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.BucketQueryTest do
         Absinthe.run(@resolver_hits_query, Schema, variables: variables)
 
       # Simulate fetching users
-      ResolverBucket.increment_key(:get_users)
+      HashringCounter.increment_key(:get_users)
 
       new_amount = starting_amount + 1
       assert {:ok, %{data: %{"resolverHits" => ^new_amount}}} =
@@ -47,7 +47,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.BucketQueryTest do
         Absinthe.run(@resolver_hits_query, Schema, variables: variables)
 
       # Simulate creating a user
-      ResolverBucket.increment_key(:create_user)
+      HashringCounter.increment_key(:create_user)
 
       new_amount = starting_amount + 1
       assert {:ok, %{data: %{"resolverHits" => ^new_amount}}} =
@@ -61,7 +61,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.BucketQueryTest do
         Absinthe.run(@resolver_hits_query, Schema, variables: variables)
 
       # Simulate updating user preferences
-      ResolverBucket.increment_key(:update_user_preferences)
+      HashringCounter.increment_key(:update_user_preferences)
 
       new_amount = starting_amount + 1
       assert {:ok, %{data: %{"resolverHits" => ^new_amount}}} =
@@ -75,7 +75,7 @@ defmodule GraphqlApiAssignmentWeb.Schema.Queries.BucketQueryTest do
         Absinthe.run(@resolver_hits_query, Schema, variables: variables)
 
       # Simulate updating user
-      ResolverBucket.increment_key(:update_user)
+      HashringCounter.increment_key(:update_user)
 
       new_amount = starting_amount + 1
       assert {:ok, %{data: %{"resolverHits" => ^new_amount}}} =
